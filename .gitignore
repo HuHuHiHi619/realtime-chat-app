@@ -1,0 +1,66 @@
+# =================================================
+# General
+# =================================================
+
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+dist-ssr/
+**/dist-ssr/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =================================================
+# Frontend (React/Vite)
+# =================================================
+
+# Vite-specific cache and build files
+frontend/.pnp.*
+frontend/_tmp/
+frontend/coverage/
+frontend/*.local
+
+# =================================================
+# Backend (Express/Prisma/Docker/MySQL)
+# =================================================
+
+# Prisma
+backend/generated/prisma/
+backend/prisma/dev.db # ถ้าใช้ SQLite สำหรับการพัฒนา
+
+# MySQL Data (สำคัญมากจากปัญหาครั้งก่อน)
+# ป้องกันไม่ให้ไฟล์ข้อมูลและไฟล์ขณะทำงานของ DB หลุดเข้า Git
+mysql/
+
+# Docker
+# โดยทั่วไปไฟล์ docker-compose.yml และ Dockerfile ควรอยู่ใน Git
+# แต่ถ้ามีไฟล์ที่สร้างขึ้นขณะ build หรือ run ก็ควร ignore ที่นี่
+
+# =================================================
+# Editor & OS Files
+# =================================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
