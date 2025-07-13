@@ -1,12 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  shadowDatabaseUrl = env("DATABASE_URL")
 }
 
 datasource db {
@@ -17,12 +12,66 @@ datasource db {
 model User {
   id         Int      @id @default(autoincrement())
   email      String   @unique
-  name       String   
+  username   String  
   password   String   
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  last_active_at DateTime? @default(now()) 
+  updated_at  DateTime @updatedAt
 
-  @@map("Users")
+  sentMessages Message[] @relation("Sender")
+  participants Particaipant[]
 }
 
-model 
+enum ConversationType {
+  PRIVATE
+  GROUP
+}
+
+model  Conversation {
+  id Int @id @default(autoincrement())
+  type ConversationType @default(PRIVATE)
+  name String?
+  user_id Int
+  joined_at DateTime @default(now())
+  last_read_message_id Int?
+  
+  messages Message[]
+  participants Particaipant[]
+}
+
+model Particaipant {
+  id Int @id @default(autoincrement())
+  conversation Conversation @relation(fields: [conversation_id] , references: [id] , onDelete: Cascade)
+  conversation_id Int
+  user User @relation(fields: [user_id] , references: [id] , onDelete: Cascade) 
+  user_id Int
+  joined_at DateTime @default(now())
+  last_read_message_id Int?
+
+  @@unique([conversation_id , user_id])
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  FILE
+  SYSTEM // For system message
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+  conversation Conversation @relation(fields: [conversation_id] , references: [id] , onDelete: Cascade)
+  conversation_id Int
+  sender User @relation("Sender", fields: [sender_id] , references: [id] , onDelete: Cascade)
+  sender_id Int
+  content String @db.Text
+  message_type MessageType @default(TEXT)
+  sent_at DateTime @default(now())
+  is_edited Boolean @default(false)
+  is_deleted Boolean @default(false)
+  deletedAt DateTime?
+  editedAt DateTime?
+
+
+}
