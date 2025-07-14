@@ -3,23 +3,35 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser';
 import { readdirSync } from 'fs';
+import http from 'http'
+import { Server } from 'socket.io'
+import { setupSocket } from './socket';
 
 dotenv.config()
 const app = express()
+const server = http.createServer(app)
 const PORT = 5000
-
+const io = new Server(server , {
+  cors: { origin: 'http://localhost:5173' }
+}) 
 
 app.use(cors({
     origin: 'http://localhost:5173',
 }))
 app.use(express.json())
 app.use(cookieParser())
-app.get("/", (_req, res) => {
-  res.send("Backend is running!");
-});
 
-console.log(process.env.DATABASE_URL);
+setupSocket(io)
 
+const setUpRoutes = async () => {
+  const routeFiles = readdirSync('./src/routes')
+  for(const routeFile of routeFiles){
+    const routeModule = await import(`./routes/${routeFile}`)
+    app.use('/api', routeModule.default)
+  }
+}
+
+setUpRoutes()
 
 app.listen(PORT, () => {
   console.log(`🚀 Server is running at http://localhost:${PORT}`);
