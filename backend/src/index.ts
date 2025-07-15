@@ -5,14 +5,15 @@ import cookieParser from 'cookie-parser';
 import { readdirSync } from 'fs';
 import http from 'http'
 import { Server } from 'socket.io'
-import { setupSocket } from './socket';
+import { setupSocketHandlers } from './controllers/messageController';
+
 
 dotenv.config()
 const app = express()
 const server = http.createServer(app)
 const PORT = 5000
 const io = new Server(server , {
-  cors: { origin: 'http://localhost:5173',  credentials: true }
+  cors: { origin: 'http://localhost:5173',  credentials: true , methods:['GET', 'POST'] }
 }) 
 
 app.use(cors({
@@ -22,7 +23,7 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
-setupSocket(io)
+setupSocketHandlers(io)
 
 const setUpRoutes = async () => {
   const routeFiles = readdirSync('./src/routes')
@@ -34,7 +35,7 @@ const setUpRoutes = async () => {
 
 setUpRoutes()
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server is running at http://localhost:${PORT}`);
 });
 

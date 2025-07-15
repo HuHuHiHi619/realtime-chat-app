@@ -19,7 +19,7 @@ model User {
   updated_at  DateTime @updatedAt
 
   sentMessages Message[] @relation("Sender")
-  participants Particaipant[]
+  participants Participant[]
 }
 
 enum ConversationType {
@@ -34,12 +34,13 @@ model  Conversation {
   user_id Int
   joined_at DateTime @default(now())
   last_read_message_id Int?
-  
+  edited_at DateTime? @updatedAt
+
   messages Message[]
-  participants Particaipant[]
+  participants Participant[]
 }
 
-model Particaipant {
+model Participant {
   id Int @id @default(autoincrement())
   conversation Conversation @relation(fields: [conversation_id] , references: [id] , onDelete: Cascade)
   conversation_id Int
@@ -70,8 +71,8 @@ model Message {
   sent_at DateTime @default(now())
   is_edited Boolean @default(false)
   is_deleted Boolean @default(false)
-  deletedAt DateTime?
-  editedAt DateTime?
+  deleted_at DateTime?
+  edited_at DateTime?
 
 
 }
