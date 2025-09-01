@@ -1,0 +1,140 @@
+
+generator client {
+  provider = "prisma-client-js"
+  shadowDatabaseUrl = env("DATABASE_URL")
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ===============================================
+//           AUTHENTICATION & USER
+// ===============================================
+model User {
+  id                    Int                   @id @default(autoincrement())
+  email                 String                @unique
+  username              String  
+  password              String   
+  createdAt             DateTime              @default(now())
+  last_active_at        DateTime?             @default(now()) 
+  updated_at            DateTime              @updatedAt
+
+  sentMessages          Message[]             @relation("Sender")
+  posts                 Post[]                @relation("Posted")
+  likes                 Like[]                @relation("Liked")
+  comments              Comment[]             @relation("Commented")
+  participants          Participant[]
+}
+
+enum ConversationType {
+  PRIVATE
+  GROUP
+}
+
+// ===============================================
+//           MESSAGGING
+// ===============================================
+model  Conversation {
+  id                    Int                   @id @default(autoincrement())
+  type                  ConversationType      @default(PRIVATE)
+  name                  String?
+  user_id               Int
+  joined_at             DateTime              @default(now())
+  last_read_message_id  Int?
+  edited_at             DateTime?             @updatedAt
+
+  messages Message[]
+  participants Participant[]
+}
+
+model Participant {
+  id                    Int                   @id @default(autoincrement())
+  conversation_id       Int
+  user_id               Int
+  joined_at             DateTime              @default(now())
+  last_read_message_id  Int?
+  
+  // --- RELATION ---
+  user           User @relation(fields: [user_id] , references: [id] , onDelete: Cascade) 
+  conversation   Conversation @relation(fields: [conversation_id] , references: [id] , onDelete: Cascade)
+  
+  // --- CONSTRAIN
+  @@unique([conversation_id , user_id])
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  FILE
+  SYSTEM // For system message
+}
+
+model Message {
+  id                    Int                   @id @default(autoincrement())
+  conversation_id       Int
+  sender_id             Int
+  content               String                @db.Text
+  message_type          MessageType           @default(TEXT)
+  sent_at               DateTime              @default(now())
+  is_edited             Boolean               @default(false)
+  is_deleted            Boolean               @default(false)
+  deleted_at            DateTime?
+  edited_at             DateTime?
+
+  // --- RELATION ---
+  sender User @relation("Sender", fields: [sender_id] , references: [id] , onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversation_id] , references: [id] , onDelete: Cascade)
+}
+
+// ===============================================
+//           SOCIAL (POSTS)
+// ===============================================
+model Post {
+  id                    Int                    @id @default(autoincrement())
+  content               String                 @db.Text
+  created_at            DateTime               @default(now())
+  updated_at            DateTime?
+  author_id             Int
+
+  // --- RELATION ---
+  author   User      @relation("Posted", fields: [author_id], references: [id], onDelete: Cascade)
+  likes    Like[] 
+  comments Comment[]
+}
+
+
+model Like {
+  id                    Int                     @id @default(autoincrement())
+  created_at            DateTime                @default(now())
+  updated_at            DateTime?
+  author_id             Int
+  post_id               Int?
+  comment_id            Int?
+
+  // --- RELATION ---
+  author  User     @relation("Liked", fields: [author_id], references: [id], onDelete: Cascade)
+  post    Post?    @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+
+  // --- CONSTRAIN ---
+  @@unique([author_id , post_id])
+  @@unique([author_id , comment_id])
+}
+
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  content    String @db.Text
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  author_id  Int
+  post_id    Int
+
+  author User @relation("Commented", fields: [author_id], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  likes  Like[]
+}
+

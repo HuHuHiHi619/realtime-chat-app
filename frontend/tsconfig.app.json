@@ -21,7 +21,20 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    
+    "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["../shared/*"],
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src"]
+  "references": [
+    { "path": "../shared" }
+  ],
+  "include": [
+  "src/**/*",
+  "../shared/**/*"
+]
+
 }

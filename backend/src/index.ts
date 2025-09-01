@@ -1,3 +1,4 @@
+import "./types/express/index";  
 import express from 'express';
 import cors from 'cors'
 import dotenv from 'dotenv'
@@ -5,7 +6,8 @@ import cookieParser from 'cookie-parser';
 import { readdirSync } from 'fs';
 import http from 'http'
 import { Server } from 'socket.io'
-import { setupSocketHandlers } from './controllers/messageController';
+import { setupSocketHandlers } from './socket';
+import { errorHandling } from './utils/errorHandling';
 
 
 dotenv.config()
@@ -33,13 +35,19 @@ const setUpRoutes = async () => {
   }
 }
 
-setUpRoutes()
+const startServer = async () => {
+  try{
+    await setUpRoutes()
+    app.use(errorHandling)
+    server.listen(PORT, () => {
+      console.log(`🚀 Server is running at http://localhost:${PORT}`);
+    });
+  }catch(error){
+    console.error('Failed to start server' , error)
+    process.exit(1)
+  }
+}
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server is running at http://localhost:${PORT}`);
-});
-
-
-
+startServer()
 
 export default app

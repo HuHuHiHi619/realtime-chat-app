@@ -9,8 +9,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.0",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "zod": "^4.1.1"
   }
 }

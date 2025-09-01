@@ -1,9 +1,37 @@
 import { Router } from "express";
-import { register , login } from "../controllers/authController"
+import { AuthController } from "../controllers/authController"
+import { AuthRepository } from "../repositories/AuthRepository";
+import { AuthService } from "../services/authService";
+import { validateRequest } from "../middlewares/validationReq";
+import { loginSchema, registerSchema } from "@shared/schema/auth.schema.schema";
+
 
 const router = Router()
 
-router.post('/register', register)
-router.post('/login', login)
+// --- Manual DI ---
+const authRepository = new AuthRepository()
+const authService = new AuthService(authRepository)
+const authController = new AuthController(authService)
 
-module.exports = router
+// --- Routes ---
+    // Register
+    router.post(
+        "/register",
+        validateRequest({ body : registerSchema }),
+        authController.register.bind(authController)
+    );
+    
+    // Login
+    router.post(
+        "/login",
+        validateRequest({ body : loginSchema }),
+        authController.login.bind(authController)
+    )
+    
+    // Logout
+    router.post(
+        "/logout",
+        authController.logout.bind(authController)
+    )
+
+export default router

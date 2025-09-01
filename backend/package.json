@@ -5,19 +5,20 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon --exec ts-node --project tsconfig.json src/index.ts",
+    "dev": "nodemon --exec tsx --watch src src/index.ts",
     "build": "tsc",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "schema": "src/prisma/schema.prisma",
+    "seed": "ts-node src/prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.11.1",
     "argon2": "^0.43.0",
@@ -28,7 +29,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.2",
     "socket.io": "^4.8.1",
-    "zod": "^4.0.5"
+    "zod": "^4.1.1"
   },
   "devDependencies": {
     "@types/argon2": "^0.14.1",
@@ -41,6 +42,8 @@
     "nodemon": "^3.1.10",
     "prisma": "^6.11.1",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.5",
     "typescript": "^5.8.3"
   }
 }
