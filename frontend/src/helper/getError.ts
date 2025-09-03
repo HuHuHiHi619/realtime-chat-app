@@ -1,5 +1,5 @@
 
-import type { ApiError } from "../types/error/errorTypes";
+import type { ApiError } from "../types/errorTypes";
 
 
 export const getErrorMessage = (error :unknown) : string => {

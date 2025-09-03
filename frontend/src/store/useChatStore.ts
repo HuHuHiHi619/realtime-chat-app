@@ -12,7 +12,6 @@ import type {
 } from "@/types/chatStoreType";
 import { prepareTempMessage } from "../helper/temp";
 
-
 export const useChatStore = create<ChatState>((set, get) => ({
   // CONVERSATION STATE
   conversations: [],
@@ -34,6 +33,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       await withAbortController(async (signal) => {
         const response = await conversationApi.clientGetConversations(signal);
+        console.log("response fetch conversation", response);
         if (!response)
           throw new Error("No response conversations from zustand");
         set({ conversations: response });
@@ -54,9 +54,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
           throw new Error("No response active conversation from zustand");
 
         set({ activeConversation: response });
-
-        return await get().fetchMessages(conversationId , 1);
       });
+
+      return await get().fetchMessages(conversationId, 1);
     } catch (error) {
       console.error("Error fetching active conversation from zustand", error);
       set({ activeConversation: null });
@@ -117,29 +117,42 @@ export const useChatStore = create<ChatState>((set, get) => ({
         // set real
         set({
           messages: get().messages.map((msg) =>
-            msg.id === tempMessage.id ? response : msg
+            msg.id === tempMessage.id
+              ? {
+                  ...response,
+                  id: tempMessage.id,
+                  sent_at: new Date().toISOString(),
+                }
+              : msg
           ),
         });
         // update active conversation last message
+        const updateLastMessage = (conversation: any, message: any) => ({
+          ...conversation,
+          last_message: {
+            id: message.id,
+            content: message.content,
+            sent_at: message.sent_at,
+            sender_id: message.sender_id,
+          },
+        });
+
         set((state) => {
-          if (state.activeConversation) {
-            return {
-              activeConversation:
-                state.activeConversation.conversation_id ===
-                response.conversation_id
-                  ? { ...state.activeConversation, last_message: response }
-                  : state.activeConversation,
-            };
-          } else {
-            return state;
-          }
+          if (!state.activeConversation) return state;
+
+          return {
+            ...state,
+            activeConversation: updateLastMessage(
+              state.activeConversation,
+              response
+            ),
+          };
         });
       });
     } catch (error) {
       console.error("Error creating message from zustand", error);
     }
   },
-
 
   // INPUT METHODS
   setInputMessage: (text: string) => set({ inputMessage: text }),

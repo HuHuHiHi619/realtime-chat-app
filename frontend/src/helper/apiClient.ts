@@ -29,7 +29,7 @@ export const apiClient = async <T>(input: {
   signal: AbortSignal;
 }): Promise<T> => {
   try {
-  console.log("Input to apiClient:", input)
+  
     const response = await fetch(input.url, {
       method: input.method,
       headers: {

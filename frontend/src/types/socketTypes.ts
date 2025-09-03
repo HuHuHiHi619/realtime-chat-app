@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { socketSchema } from "../../schema/socket/socketSchema"
+import { socketSchema } from "../schema/socket/socketSchema"
 export type SocketState = z.infer<typeof socketSchema> & {
     connect : () => void
     disconnect : () => void

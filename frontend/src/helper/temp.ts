@@ -6,7 +6,7 @@ export function prepareTempMessage(messageData: CreateMessageReq, conversationId
     id: tempId,
     conversation_id: conversationId,
     sender_id: messageData.sender_id,
-    sent_at: new Date(),
+    sent_at: new Date().toISOString(),
     content: messageData.content.trim(),
     message_type: messageData.message_type,
     is_edited : false

@@ -43,7 +43,7 @@ interface ChatMessageAction {
 
 interface ChatConversationAction {
   // LOGIC FUNCTION
-  fetchConversations: (signal: AbortSignal) => Promise<void>;
+  fetchConversations: () => Promise<void>;
   fetchActiveConversation: (conversation_id: number) => Promise<void>;
 
   // UI FUNCTION

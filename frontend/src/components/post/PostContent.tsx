@@ -1,17 +1,9 @@
-import React from 'react'
-
-function PostContent() {
+function PostContent({ content }: any) {
   return (
-    <div>
-        <span className='mx-4'>
-            PostContent
-        </span>
-        <div className=' grid justify-center pt-2'>
-            <img  alt="" className='w-[200px] h-[200px] bg-amber-500' />
-        </div>
-        
+    <div className="p-4">
+      <p>{content}</p>
     </div>
-  )
+  );
 }
 
-export default PostContent
+export default PostContent;

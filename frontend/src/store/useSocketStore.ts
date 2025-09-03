@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { io, Socket } from "socket.io-client";
-import type { SocketState } from "../types/socket/socketTypes";
+import type { SocketState } from "../types/socketTypes";
 import { initMessageListner } from "../socket/messageListner";
 
 const socket: Socket = io("http://localhost:5000", { autoConnect: false });

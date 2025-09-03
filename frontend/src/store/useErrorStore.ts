@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ErrorStateBase , ErrorMethods } from "../types/error/errorTypes";
+import type { ErrorStateBase , ErrorMethods } from "../types/errorTypes";
 
 
 export const useErrorStore = create<ErrorStateBase & ErrorMethods>((set, get) => ({

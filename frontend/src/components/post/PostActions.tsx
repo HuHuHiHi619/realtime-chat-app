@@ -1,13 +1,13 @@
 import React from 'react'
 import ActionButton from '../common/ActionButton'
 
-function PostActions() {
+function PostActions({ postId , likes , comments} : any) {
   return (
     <div className="mx-4 ">
     {/* Stats */}
     <div className="border-b pb-2 flex justify-between text-gray-500 text-sm ">
-      <span>4 likes</span>
-      <span>1 comment</span>
+      { likes && <span>{likes} likes</span>}
+      { comments && <span>{comments} comments</span>}
     </div>
     
     {/* Action buttons */}

@@ -13,7 +13,7 @@ export const postApi = {
             signal : signal
         })
     },
-    clientcreatePost : (data : CreatePostReq, signal : AbortSignal) => {
+    clientCreatePost : (data : CreatePostReq, signal : AbortSignal) => {
         return apiClient({
             method : 'POST',
             url : `${baseUrl}/posts`,

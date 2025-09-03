@@ -1,5 +1,5 @@
 import z from "zod";
-import type { apiErrorSchema } from "../../schema/error/stateSchema";
+import type { apiErrorSchema } from "../schema/error/stateSchema";
 
 export type ApiError = z.infer<typeof apiErrorSchema>
 

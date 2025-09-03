@@ -1,7 +1,7 @@
 import { postApi } from "@/api/post";
 import { withAbortController } from "@/helper/withAbortController";
-import type { CreatePostReq, Posts, PostState } from "@/types/postStoreType";
 import { create } from "zustand";
+import type { CreatePostReq, Posts, PostState } from "@/types/postStoreType";
 
 export const usePostStore = create<PostState>((set, get) => ({
   posts: [],
@@ -36,7 +36,7 @@ export const usePostStore = create<PostState>((set, get) => ({
   createPost: async (data: CreatePostReq) => {
     try {
       await withAbortController(async (signal) => {
-        const response = await postApi.clientcreatePost(data, signal);
+        const response = await postApi.clientCreatePost(data, signal);
         if (!response) throw new Error("No response posts from zustand");
         await get().fetchPosts();
       });

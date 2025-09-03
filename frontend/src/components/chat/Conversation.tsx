@@ -32,17 +32,9 @@ function Conversation() {
   const { isAuthenticated } = useAuthStore((state) => state);
 
   useEffect(() => {
-    if (!isAuthenticated) return; 
+    if (!isAuthenticated) return;
 
-    const controller = new AbortController();
-  
-    fetchConversations(controller.signal).catch((err) => {
-      if (err.name !== "AbortError") console.error(err);
-    });
-
-    return () => {
-      controller.abort();
-    };
+    fetchConversations();
   }, [isAuthenticated]);
 
   return (

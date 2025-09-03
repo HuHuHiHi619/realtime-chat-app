@@ -47,10 +47,19 @@ export const createPostRepoSchema = z.object({
 export const postSchema = z.object({
   id: z.number().int().positive(),
   content: z.string().min(1).max(5000),
-  created_at: z.date(),
-  updated_at: z.date().nullable(),
+  created_at: z.string().transform((str) => new Date(str)),
+  updated_at: z.string().transform((str) => new Date(str)).nullable(),
   author_id: z.number().int().positive(),
-});
+  _count : z.object({
+    likes : z.number(),
+    comments : z.number()
+  })
+}).transform((data) => ({
+  ...data,
+  likes: data._count.likes,
+  comments: data._count.comments,
+}));
+
 
 // ===== VALIDATION SCHEMAS =====
 export const validateGetPostsRequest = {

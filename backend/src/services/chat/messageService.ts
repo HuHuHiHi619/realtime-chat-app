@@ -23,7 +23,13 @@ export class MessageService{
                 total : totalMessages,
                 hasMore
             },
-            messages 
+            messages : messages.map(msg => ({
+                ...msg,
+                sent_at : msg.sent_at instanceof Date
+                ? msg.sent_at.toISOString()
+                : String(msg.sent_at),
+                sender_id : Number(msg.sender_id)
+            }))
         }
     }
 
