@@ -22,10 +22,10 @@ export const postApi = {
             signal : signal
         })
     }, 
-    clientDeletePost : ( signal : AbortSignal) => {
+    clientDeletePost : (post_id : number , signal : AbortSignal) => {
         return apiClient({
             method : 'DELETE',
-            url : `${baseUrl}/posts`,
+            url : `${baseUrl}/posts/${post_id}`,
             schema :(data) => data,
             signal : signal
         })

@@ -7,6 +7,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   currentView: "Post",
   isPostOpen: false,
   isPostInputOpen: false,
+  isPostMenuOpen: false,
 
   setCurrentView: (view: UiState["currentView"]) => {
     set({ currentView: view });
@@ -20,6 +21,12 @@ export const useUiStore = create<UiState>((set, get) => ({
       const newValue = !state.isPostInputOpen;
       return { isPostInputOpen: newValue };
     });
+  },
+  togglePostMenuOpen : () => {
+    set((state) => {
+      const newValue = !state.isPostMenuOpen;
+      return { isPostMenuOpen: newValue };
+    })
   },
 
   resetUi: () =>

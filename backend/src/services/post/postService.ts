@@ -28,4 +28,11 @@ export class PostService {
     async createPost(postData : CreatePostServiceDTO){
         return this.postRepository.createPost(postData)
     }
+
+    async deletePost(postData: any){
+        const existingPost = await this.postRepository.findPost(postData)
+        if(!existingPost) throw new Error('Post not found')
+        
+        return this.postRepository.deletePost(existingPost.id)
+    }
 }

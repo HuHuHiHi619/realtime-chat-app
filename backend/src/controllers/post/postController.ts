@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { PostService } from "../../services/post/postService";
 
 
+
 export class PostController {
   constructor(private postService: PostService) {}
 
@@ -32,6 +33,20 @@ export class PostController {
       const post = await this.postService.createPost(input);
 
       return res.status(201).json({ post });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async deletePost(req : Request , res : Response , next : NextFunction){
+    try {
+      const input = {
+       post_id : req.validatedParams.post_id, 
+       author_id : req.user.id
+      }
+      await this.postService.deletePost(input);
+
+      return res.status(201).json({ message : "Post deleted successfully"});
     } catch (error) {
       next(error);
     }

@@ -6,6 +6,7 @@ import { useErrorStore } from "../../store/useErrorStore";
 import { ApiClientError } from "../../helper/apiClient";
 import { FormInput } from "../common/FormInput";
 import { ErrorAlert } from "../common/ErrorAlert";
+import { Cherry } from "lucide-react";
 
 function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -55,8 +56,6 @@ function AuthForm() {
     e.preventDefault();
     const formName = isLogin ? "loginForm" : "registerForm";
     try {
-   
-
       clearFormErrors(formName);
       if (isLogin) {
         await login({
@@ -94,14 +93,16 @@ function AuthForm() {
   const currentForm = isLogin ? "loginForm" : "registerForm";
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center  justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8">
+    <div className="z-50 min-h-screen flex items-center  justify-center p-4">
+      <div className="relative bg-brandCream-50 rounded-2xl shadow-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isLogin ? "Welcome Back" : "Create Account"}
-          </h1>
-          <p className="text-gray-600">
+          <div className="flex items-center justify-center gap-8 text-3xl font-bold text-brandChoco-50 mb-2">
+            <Cherry />
+            <p>{isLogin ? "Welcome Back" : "Create Account"}</p>
+            <Cherry />
+          </div>
+          <p className="text-brandChoco-50">
             {isLogin ? "Sign in to your account" : "Join us today"}
           </p>
         </div>
@@ -150,15 +151,15 @@ function AuthForm() {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-200 ${
+            className={`w-full py-3 px-4 rounded-lg font-semibold text-xl text-white transition-all duration-200 ${
               isLoading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5"
+                ? "bg-brandStrawberry-100 cursor-not-allowed"
+                : "bg-brandStrawberry-50 hover:bg-brandGreen-50 hover:shadow-lg transform hover:-translate-y-0.5"
             }`}
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-brandChoco-50 border-t-transparent rounded-full animate-spin"></div>
                 {isLogin ? "Signing in..." : "Creating account..."}
               </div>
             ) : isLogin ? (
@@ -169,12 +170,12 @@ function AuthForm() {
           </button>
 
           {/* Toggle Mode */}
-          <div className="text-center pt-4 border-t border-gray-200">
-            <p className="text-gray-600">
+          <div className="text-center pt-4 border-t border-brandChoco-50">
+            <p className="text-brandChoco-50">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
               <button
                 onClick={toggleMode}
-                className="ml-2 text-blue-600 font-semibold hover:text-blue-800 hover:underline transition-colors"
+                className="ml-2 text-text-brandChoco-50 font-semibold hover:text-brandChoco-50 hover:underline transition-colors"
               >
                 {isLogin ? "Sign up" : "Sign in"}
               </button>
@@ -183,9 +184,17 @@ function AuthForm() {
         </form>
 
         {/* Footer */}
-        <p className="text-center text-gray-500 text-sm mt-8">
+        <p className="text-center text-brandChoco-50 text-sm mt-8">
           By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
+
+
+        <div className="absolute top-4 left-4 -rotate-30 ">🧁</div>
+        <div className="absolute top-16 right-8 ">🍯</div>
+        <div className="absolute bottom-20 left-6 ">🍪</div>
+        <div className="absolute bottom-14 left-52 rotate-30  ">🧁</div>
+        <div className="absolute top-24 right-30  ">🍪</div>
+
       </div>
     </div>
   );

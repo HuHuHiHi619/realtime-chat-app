@@ -31,6 +31,16 @@ export class PostRepository {
     });
   }
 
+  async findPost(postData : any){
+    const {  post_id , author_id } = postData
+    return await prisma.post.findUnique({
+      where : {
+        id : post_id,
+        author_id : author_id
+      }
+    })
+  }
+
   async createPost({ author_id, content }: CreatePostRepoDTO) {
     return await prisma.post.create({
       data: {
@@ -46,4 +56,11 @@ export class PostRepository {
       },
     });
   }
+  
+  async deletePost(post_id: number ) {
+    return await prisma.post.delete({
+      where: { id: post_id },
+    });
+  }
+  
 }

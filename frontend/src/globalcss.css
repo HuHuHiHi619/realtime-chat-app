@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+    --color-brandGreen-50: #5F8B4C;
+
+    --color-brandCream-100: #f4a460;
+    --color-brandCream-50: #FFDDAB;
+
+    --color-brandStrawberry-100: #FF5C5C;
+    --color-brandStrawberry-50: #FF9A9A;
+    
+    --color-brandChoco-100: #C98264;
+    --color-brandChoco-50: #945034;
+}

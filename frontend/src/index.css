@@ -1,13 +1,9 @@
 @import "tailwindcss";
 :root {
-  font-family: Monaco, Menlo, Consolas,Droid Sans Mono,Inconsolata;
+  
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #532d2d;
-
+  background-color: #945034 ;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -30,5 +26,81 @@
 #modal.show {
   display: flex;
 }
+
+.post-menu-trigger{
+  position : relative;
+  cursor: pointer;
+}
+
+.post-menu{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  white-space: nowrap;
+  position: absolute;
+  top: 100%; 
+  right: 80%;
+  color:  white;
+  background-color: #945034;
+  border: 3px solid #f4a460;
+  border-radius: 10px;
+  box-shadow:  0px 1px 6px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  z-index: 1000;
+  transform: scale(0);
+  transform-origin: top right;
+  transition: transform 0.15s ease-in-out;
+}
+
+.post-menu.show{
+  transform: scale(1);
+}
+
+
+.snowflake {
+  color: white;
+  position: fixed;
+  top: -10px;                /* เริ่มเหนือจอเล็กน้อย */
+  pointer-events: none;      /* ไม่บังการคลิก */
+  animation: fall var(--dur) linear forwards;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+.snowflake .inner {
+  animation: sway var(--swayDur) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.snowflake .glyph {
+  display: inline-block;
+  animation: spin var(--spinDur) linear infinite;
+  backface-visibility: hidden;
+}
+
+/* ตกลงล่าง + ค่อย ๆ จาง */
+@keyframes fall {
+  0%   { transform: translate3d(0, -10px, 0); opacity: var(--startOpacity, .9); }
+  100% { transform: translate3d(0, 100vh, 0); opacity: 0; }
+}
+
+/* ส่ายซ้าย-ขวา */
+@keyframes sway {
+  from { transform: translateX(calc(var(--sway) * -1)); }
+  to   { transform: translateX(var(--sway)); }
+}
+
+/* หมุนเองเบา ๆ */
+@keyframes spin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snowflake, .snowflake .inner, .snowflake .glyph {
+    animation: none !important;
+  }
+}
+
 
 

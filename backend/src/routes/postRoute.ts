@@ -5,7 +5,8 @@ import { PostService } from "../services/post/postService";
 import { authenticateToken } from "../middlewares/jwtAuth";
 import { requireUser } from "../middlewares/requireUser";
 import { validateRequest } from "../middlewares/validationReq";
-import { createPostSchema, getPostQuerySchema } from "@shared/schema/post/post.schema";
+import { createPostSchema, getPostQuerySchema, paramsPostSchema } from "@shared/schema/post/post.schema";
+
 
 
 const router = Router()
@@ -34,6 +35,16 @@ router.post(
         body : createPostSchema
     }),
     postController.createPost.bind(postController)
+)
+
+router.delete(
+    "/posts/:post_id",
+    authenticateToken,
+    requireUser,
+    validateRequest({
+        params : paramsPostSchema
+    }),
+    postController.deletePost.bind(postController)
 )
 
 export default router

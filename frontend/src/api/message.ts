@@ -1,7 +1,7 @@
-import type { CreateMessageReq, Messages, PaginatedMessages } from "@/types/chatStoreType";
+import type { CreateMessageReq, PaginatedMessages } from "@/types/chatStoreType";
 import { apiClient } from "../helper/apiClient";
 import { createMessageSchema, paginatedMessageSchema } from "@shared/schema/chat/message.schema";
-import { conversationSchema } from "@shared/schema/chat/conversation.schema";
+
 
 const baseUrl = "http://localhost:5000/api";
 

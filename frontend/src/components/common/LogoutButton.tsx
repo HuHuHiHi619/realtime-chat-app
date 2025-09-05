@@ -1,21 +1,20 @@
 import React from "react";
 import { useAuthStore } from "../../store";
 import { useNavigate } from "react-router-dom";
-
+import { Settings } from "lucide-react";
 function LogoutButton() {
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const controller = new AbortController()
-    await logout(controller.signal);
+    await logout();
     navigate("/");
   };
 
   return (
-    <button onClick={handleLogout} className="bg-red-600 text-white p-2 rounded-md cursor-pointer hover:scale-105 transition-all ease-in 1s">
-      Logout
-    </button>
+    <div onClick={handleLogout} className="  text-red-500  rounded-md cursor-pointer hover:scale-105 transition-all ease-in 1s">
+      <Settings />
+    </div>
   );
 }
 

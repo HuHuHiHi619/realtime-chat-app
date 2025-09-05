@@ -1,15 +1,26 @@
 import React from "react";
 
 interface ActionButtonProps {
-    icon: string;
-    text: string;
+  icon: React.ElementType;
+  text: string;
+  className?: string;       // สำหรับปุ่ม
+  iconClassName?: string;   // สำหรับ icon
+  textClassName?: string;   // สำหรับ text
 }
 
-function ActionButton({ icon, text } : ActionButtonProps) {
+function ActionButton({ 
+  icon: Icon, 
+  text, 
+  className = "", 
+  iconClassName = "w-5 h-5", 
+  textClassName = "" 
+}: ActionButtonProps) {
   return (
-    <button className="flex justify-center gap-2 p-1 cursor-pointer rounded-lg hover:bg-pink-500">
-        <span className="text-black">{icon}</span>
-        <span className="text-black">{text}</span>
+    <button
+      className={`flex items-center justify-center gap-2 p-2 rounded-lg cursor-pointer transition-colors duration-200 ${className}`}
+    >
+      <Icon className={iconClassName} />
+      <span className={textClassName}>{text}</span>
     </button>
   );
 }

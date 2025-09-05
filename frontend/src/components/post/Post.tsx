@@ -5,7 +5,6 @@ import PostInputCard from "./PostInputCard";
 import PostLists from "./PostLists";
 import { usePostStore } from "@/store/usePostStore";
 import { useEffect } from "react";
-import { withAbortController } from "@/helper/withAbortController";
 
 function Post() {
   const { posts, fetchPosts } = usePostStore();
@@ -13,21 +12,25 @@ function Post() {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-
     fetchPosts();
-  }, [isAuthenticated, fetchPosts]);
+  }, [isAuthenticated, fetchPosts ]);
 
   return (
     <>
       <FeedLayout>
-        <div className="mx-24 bg- bg-gray-200 rounded-2xl">
+        <div className="mx-24 rounded-2xl">
           <PostInput />
         </div>
-        <div className="mx-24 my-5  bg-gray-200 rounded-2xl">
-          {posts.map((post) => (
-            <PostLists key={post.id} post={post} />
-          ))}
-        </div>
+        {posts ? (
+          <div className="mx-24 my-5 grid gap-4 rounded-2xl">
+            {posts.map((post) => (
+              <PostLists key={post.id} post={post} />
+            ))}
+          </div>
+        ) : 
+        <div className="mx-24 my-5 rounded-2xl text-center">
+          <p className="font-bold text-brandChoco-50 text-3xl">YOU HAVE NO POST</p>
+        </div>}
       </FeedLayout>
       <PostInputCard />
     </>

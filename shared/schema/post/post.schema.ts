@@ -3,7 +3,7 @@ import { paginationSchema } from "../chat/message.schema";
 
 // ===== PARAMS SCHEMAS =====
 export const paramsPostSchema = z.object({
-  post_id: z.string().transform((val) => parseInt(val)),
+  post_id: z.coerce.number().int().positive(),
 });
 
 // ===== QUERY SCHEMAS =====
