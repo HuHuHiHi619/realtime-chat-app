@@ -10,7 +10,7 @@ function PostLists({ post } : any) {
     <div className='bg-white shadow-md border border-gray-100 rounded-2xl'>
         <PostHeader user={post.author_id} createdAt={formatDate(post.created_at)} postId={post.id}/>
         <PostContent content={post.content} />
-        <PostActions postId={post.id} likes={post.likes} />
+        <PostActions postId={post.id} likes={post.likes} isLiked={post.isLiked} />
     </div>
   )
 }

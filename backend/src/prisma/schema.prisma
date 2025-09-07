@@ -28,6 +28,8 @@ model User {
   participants          Participant[]
 }
 
+
+
 enum ConversationType {
   PRIVATE
   GROUP
@@ -132,9 +134,12 @@ model Comment {
   updated_at DateTime?
   author_id  Int
   post_id    Int
+  parent_id  Int?
 
   author User @relation("Commented", fields: [author_id], references: [id], onDelete: Cascade)
   post   Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+
   likes  Like[]
 }
 

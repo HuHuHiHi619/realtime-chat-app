@@ -31,15 +31,7 @@ const likeController = new LikeController(likeService)
         }),
         likeController.likePost.bind(likeController)
     )
-    router.delete(
-        '/posts/:post_id/likes',
-        authenticateToken,
-        validateRequest({
-            params : validateLikeSchema
-        }),
-        likeController.unlikePost.bind(likeController)
-    )
-
+   
     // -- COMMENT --
      router.get(
         '/comments/:comment_id/likes',
@@ -57,12 +49,5 @@ const likeController = new LikeController(likeService)
         }),
         likeController.likePost.bind(likeController)
     )
-    router.delete(
-        '/comments/:comment_id/likes',
-        authenticateToken,
-        validateRequest({
-            params : validateLikeSchema
-        }),
-        likeController.unlikePost.bind(likeController)
-    )
+  
 export default router

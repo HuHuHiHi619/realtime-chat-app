@@ -6,6 +6,7 @@ interface ActionButtonProps {
   className?: string;       // สำหรับปุ่ม
   iconClassName?: string;   // สำหรับ icon
   textClassName?: string;   // สำหรับ text
+  action : () => void
 }
 
 function ActionButton({ 
@@ -13,10 +14,12 @@ function ActionButton({
   text, 
   className = "", 
   iconClassName = "w-5 h-5", 
-  textClassName = "" 
+  textClassName = "", 
+  action
 }: ActionButtonProps) {
   return (
     <button
+      onClick={action}
       className={`flex items-center justify-center gap-2 p-2 rounded-lg cursor-pointer transition-colors duration-200 ${className}`}
     >
       <Icon className={iconClassName} />

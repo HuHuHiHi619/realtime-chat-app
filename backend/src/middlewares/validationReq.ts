@@ -21,13 +21,11 @@ export const validateRequest = <
   ) => {
 
     try {
-      console.log("reqParams",req.params)
+    
       if (schemas.body) req.validatedBody = await schemas.body.parseAsync(req.body);
       if (schemas.query) req.validatedQuery = await schemas.query.parseAsync(req.query);
       if (schemas.params) req.validatedParams = await schemas.params.parseAsync(req.params);
-      console.log("validateparams",req.validatedParams)
-      
-      
+     
       next();
     } catch (err: any) {
       const fieldErrors: Record<string, string> = {};

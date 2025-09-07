@@ -5,9 +5,10 @@ import PostInputCard from "./PostInputCard";
 import PostLists from "./PostLists";
 import { usePostStore } from "@/store/usePostStore";
 import { useEffect } from "react";
+import PostModal from "./postModal";
 
 function Post() {
-  const { posts, fetchPosts } = usePostStore();
+  const { postsById , postIds , fetchPosts } = usePostStore();
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
@@ -21,12 +22,16 @@ function Post() {
         <div className="mx-24 rounded-2xl">
           <PostInput />
         </div>
-        {posts ? (
+        {postIds ? (
           <div className="mx-24 my-5 grid gap-4 rounded-2xl">
-            {posts.map((post) => (
-              <PostLists key={post.id} post={post} />
-            ))}
+            { postIds.map((id) => {
+              const post = postsById[id]
+     
+              return <PostLists key={id} post={post} />
+            }) }
+          <PostModal/>
           </div>
+
         ) : 
         <div className="mx-24 my-5 rounded-2xl text-center">
           <p className="font-bold text-brandChoco-50 text-3xl">YOU HAVE NO POST</p>

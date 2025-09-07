@@ -1,9 +1,10 @@
 import { usePostStore, useUiStore } from "@/store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Ellipsis, Bookmark, Trash2} from "lucide-react";
+import { set } from "zod";
 
 function PostHeader({ user, createdAt , postId }: any) {
-  const { isPostMenuOpen, togglePostMenuOpen } = useUiStore();
+  const [isPostMenuOpen , setIsMenuOpen] = useState<boolean>(false)
   const { deletePost } = usePostStore();
   const postMenuRef = useRef<HTMLDivElement>(null);
 
@@ -15,7 +16,6 @@ function PostHeader({ user, createdAt , postId }: any) {
     }
   }
 
-
   useEffect(() => {
     const handleClickOutSide = (event: MouseEvent) => {
       if (
@@ -23,7 +23,7 @@ function PostHeader({ user, createdAt , postId }: any) {
         !postMenuRef.current.contains(event.target as Node) &&
         isPostMenuOpen
       ) {
-        togglePostMenuOpen();
+        setIsMenuOpen(prev => !prev)
       }
     };
 
@@ -34,7 +34,7 @@ function PostHeader({ user, createdAt , postId }: any) {
     return () => {
       document.removeEventListener("click", handleClickOutSide);
     };
-  }, [isPostMenuOpen, togglePostMenuOpen]);
+  }, [isPostMenuOpen]);
 
   useEffect(() => {
     const postMenu = document.getElementById("post-menu");
@@ -65,7 +65,7 @@ function PostHeader({ user, createdAt , postId }: any) {
         <div
           ref={postMenuRef}
           className="post-menu-trigger"
-          onClick={togglePostMenuOpen}
+          onClick={() => setIsMenuOpen(prev => !prev)}
         >
           <div className="mr-2 p-2 rounded-full text-brandChoco-50 hover:bg-brandChoco-50 hover:text-white transition-all ease-in-out duration-300">
             <Ellipsis />

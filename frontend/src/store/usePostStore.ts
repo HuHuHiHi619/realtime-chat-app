@@ -6,7 +6,8 @@ import type { CreatePostReq, Posts, PostState } from "@/types/postStoreType";
 import { useUiStore } from "./useUiStore";
 
 export const usePostStore = create<PostState>((set, get) => ({
-  posts: [],
+  postIds: [],
+  postsById: {},
   pagination: {
     page: 1,
     limit: 20,
@@ -22,12 +23,22 @@ export const usePostStore = create<PostState>((set, get) => ({
         if (!response) throw new Error("No response posts from zustand");
 
         set((state) => {
-          const existingId = new Set(state.posts.map((post) => post.id));
-          const newPosts = response.posts.filter(
-            (p: Posts) => !existingId.has(p.id)
+          const postsById = response.posts.reduce(
+            (acc: Record<number, Posts>, post: Posts) => {
+              acc[post.id] = {
+                ...state.postsById[post.id],
+                ...post,
+              };
+              return acc;
+            },
+            {}
           );
+
+          const postIds = response.posts.map((post: Posts) => post.id);
+
           return {
-            posts: [...newPosts, ...state.posts],
+            postsById,
+            postIds,
             pagination: response.pagination,
           };
         });
@@ -42,65 +53,72 @@ export const usePostStore = create<PostState>((set, get) => ({
       await withAbortController(async (signal) => {
         const response = await postApi.clientCreatePost(data, signal);
         if (!response) throw new Error("No response posts from zustand");
+
         await get().fetchPosts();
-        useUiStore.getState().togglePostInputOpen()
+        useUiStore.getState().togglePostInputOpen();
       });
     } catch (error) {
       console.error("Error creating post from zustand", error);
     }
   },
 
-  deletePost: async(post_id : number) => {
-    try{
+  deletePost: async (post_id: number) => {
+    const prevPosts = {
+      postsById: get().postsById,
+      postIds: get().postIds,
+    };
+    try {
+      set((state) => {
+        const newPostsById = { ...state.postsById };
+        delete newPostsById[post_id];
+
+        return {
+          postsById: newPostsById,
+          postIds: state.postIds.filter((id) => id !== post_id),
+        };
+      });
+
       await withAbortController(async (signal) => {
         const response = await postApi.clientDeletePost(post_id, signal);
-        if(!response) throw new Error('No response posts from zustand');
-        set((state) => ({
-          posts : state.posts.filter(post => post.id !== post_id)
-        }))
-      })
-    }catch(error){ 
+        if (!response) throw new Error("No response posts from zustand");
+      });
+    } catch (error) {
       console.error("Error deleting post from zustand", error);
+      set(prevPosts);
     }
   },
 
-  createLike : async (post_id : number) => {
-    const prevPosts = get().posts
-    try{
+  toggleLike: async (post_id: number) => {
+    const state = get();
+    const post = state.postsById[post_id];
+    if (!post) return;
+   
+    const isCurrentlyLiked = post.isLiked ?? false;
+    const prevPost = { ...post };
+
+    set((state) => ({
+      postsById: {
+        ...state.postsById,
+        [post_id]: {
+          ...post,
+          isLiked: !isCurrentlyLiked,
+          likes: post.likes + (isCurrentlyLiked ? -1 : 1),
+        },
+      },
+    }));
+    try {
+      await withAbortController(async (signal) => {
+        const response = await likeApi.clientToggleLike(post_id, signal);
+        if (!response) throw new Error("No response posts from zustand");
+      });
+    } catch (error) {
+      console.error("Error toggling like:", error);
       set((state) => ({
-          posts : state.posts.map((post) => post.id === post_id 
-            ? { ...post, likes : post.likes + 1 }
-            : post
-          )
-        }))
-
-      await withAbortController(async (signal) => {
-        const response = await likeApi.clientCreateLike(post_id , signal);
-        if(!response) throw new Error('No response posts from zustand');
-        
-      })
-    }catch(error){ 
-      console.error("Error deleting post from zustand", error);
-      set({ posts : prevPosts })
+        postsById: {
+          ...state.postsById,
+          [post_id]: prevPost,
+        },
+      }));
     }
   },
-
-  deleteLike : async (post_id : number) => {
-    try{
-      await withAbortController(async (signal) => {
-        const response = await likeApi.clientDeleteLike(post_id , signal);
-        if(!response) throw new Error('No response posts from zustand');
-        set((state) => ({
-          posts : state.posts.map((post) => post.id === post_id 
-            ? { ...post, likes : post.likes - 1 }
-            : post
-          )
-        }))
-      })
-    }catch(error){
-       console.error("Error deleting post from zustand", error);
-    }
-  }
-
-
 }));

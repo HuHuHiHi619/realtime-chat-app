@@ -3,12 +3,14 @@ import type { Pagination } from "./chatStoreType"
 import type { createPostRepoSchema,  postSchema } from "@shared/schema/post/post.schema"
 import type { P } from "node_modules/tailwindcss/dist/resolve-config-QUZ9b-Gn.d.mts";
 
-export type Posts = z.infer<typeof postSchema>
+export type Posts = z.infer<typeof postSchema> 
+export type ClientPosts = z.infer<typeof postSchema> & { isLiked? : boolean }
 export type CreatePostReq = 
 z.infer<typeof createPostRepoSchema>;
 
 interface PostStateBase {
-    posts : Posts[],
+    postIds : number[],
+    postsById : Record<number,ClientPosts>,
     pagination : Pagination
     inputPost : string
 }
@@ -19,9 +21,8 @@ interface PostAction {
     deletePost : (post_id : number) => Promise<void>
 
     // Like action
-    createLike : (post_id : number) => Promise<void>
-    deleteLike : (post_id    : number) => Promise<void>
-
+    toggleLike : (post_id : number) => Promise<void>
+    
 }
 
 

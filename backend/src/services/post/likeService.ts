@@ -7,10 +7,8 @@ export class LikeService {
     async getLikes(data : LikeDTO) {
         return await this.likeRepository.countLike(data)
     }
-    async createLike(data : LikeDTO){
-        return await this.likeRepository.createLike(data)
+    async toggleLike(data : LikeDTO){
+        return await this.likeRepository.toggleLike(data)
     }
-    async deleteLike(data : LikeDTO){
-        return await this.likeRepository.deleteLike(data)
-    }
+
 } 

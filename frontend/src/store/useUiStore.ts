@@ -5,33 +5,34 @@ type UiState = UiStateBase & UiStateMethods;
 
 export const useUiStore = create<UiState>((set, get) => ({
   currentView: "Post",
+  activePostId: null,
   isPostOpen: false,
   isPostInputOpen: false,
-  isPostMenuOpen: false,
 
   setCurrentView: (view: UiState["currentView"]) => {
     set({ currentView: view });
   },
 
-  togglePostOpen: () => {
-    set((state) => ({ isPostOpen: !state.isPostOpen }));
+  openPost: (postId: number) => {
+    set({ isPostOpen: true, activePostId: postId });
   },
+
+  closePost: () => {
+    set({ isPostOpen: false, activePostId: null });
+  },
+
   togglePostInputOpen: () => {
     set((state) => {
       const newValue = !state.isPostInputOpen;
       return { isPostInputOpen: newValue };
     });
   },
-  togglePostMenuOpen : () => {
-    set((state) => {
-      const newValue = !state.isPostMenuOpen;
-      return { isPostMenuOpen: newValue };
-    })
-  },
-
+  
   resetUi: () =>
     set({
       currentView: "Post",
       isPostOpen: false,
+      isPostInputOpen: false,
+      activePostId: null,
     }),
 }));
