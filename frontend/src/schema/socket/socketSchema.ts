@@ -5,5 +5,6 @@ export const socketSchema = z.object({
    isConnected : z.boolean(),
    reconnectAttempts : z.number(),
    maxReconnectAttemps: z.number(),
+   isConnecting: z.boolean()
 })
 

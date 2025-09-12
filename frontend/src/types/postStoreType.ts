@@ -13,16 +13,18 @@ interface PostStateBase {
     postsById : Record<number,ClientPosts>,
     pagination : Pagination
     inputPost : string
+  
 }
 interface PostAction {
     // Post action
+    fetchPostById : (post_id : number) => Promise<void>
     fetchPosts : () => Promise<void>
     createPost : (data : CreatePostReq) => Promise<void>
     deletePost : (post_id : number) => Promise<void>
 
     // Like action
     toggleLike : (post_id : number) => Promise<void>
-    
+   
 }
 
 

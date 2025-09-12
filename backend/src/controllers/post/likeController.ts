@@ -7,8 +7,9 @@ export class LikeController {
     private async handleLikeAction(req : Request , res : Response , next : NextFunction ,action: 'get' | 'create' ) {
         try{
             const { post_id , comment_id } = req.validatedParams
+            const user_id = req.user.id;
             const input = {
-                author_id : req.user.id,
+                author_id : user_id,
                 post_id,
                 comment_id
             }

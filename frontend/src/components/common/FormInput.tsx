@@ -24,7 +24,7 @@ export const FormInput = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className={`w-full px-4 py-3 placeholder-brandChoco-50 border-2 text-brandChoco-50 
+      className={`w-full px-4 py-3 text-xl placeholder-brandChoco-50 border-2 text-brandChoco-50 
         rounded-lg  transition-colors focus:outline-none 
         hover:bg-brandChoco-100 hover:placeholder-white hover:text-white
         ${

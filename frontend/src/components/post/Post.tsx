@@ -5,7 +5,10 @@ import PostInputCard from "./PostInputCard";
 import PostLists from "./PostLists";
 import { usePostStore } from "@/store/usePostStore";
 import { useEffect } from "react";
-import PostModal from "./postModal";
+import { Panda } from "lucide-react";
+import ConfirmDialog from "../common/ConfirmDialog";
+
+
 
 function Post() {
   const { postsById , postIds , fetchPosts } = usePostStore();
@@ -19,22 +22,23 @@ function Post() {
   return (
     <>
       <FeedLayout>
-        <div className="mx-24 rounded-2xl">
+        <div className="mx-10">
           <PostInput />
         </div>
-        {postIds ? (
-          <div className="mx-24 my-5 grid gap-4 rounded-2xl">
+        {postIds.length > 0 ? (
+          <div className="mx-10 my-5 grid gap-6">
             { postIds.map((id) => {
               const post = postsById[id]
      
               return <PostLists key={id} post={post} />
             }) }
-          <PostModal/>
+            <ConfirmDialog />
           </div>
-
         ) : 
-        <div className="mx-24 my-5 rounded-2xl text-center">
-          <p className="font-bold text-brandChoco-50 text-3xl">YOU HAVE NO POST</p>
+        <div className="relative">
+          <div className="absolute top-30 left-1/2 transform -translate-x-1/2">
+            <Panda size={430} className="text-brandChoco-50 opacity-20"/>
+          </div>
         </div>}
       </FeedLayout>
       <PostInputCard />

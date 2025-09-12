@@ -5,6 +5,14 @@ import type { CreatePostReq } from "@/types/postStoreType";
 
 const baseUrl = "http://localhost:5000/api";
 export const postApi = {
+    clientGetSinglePost : (post_id : number ,  signal : AbortSignal) => {
+        return apiClient({
+            method : 'GET',
+            url : `${baseUrl}/posts/${post_id}`,
+            schema : (data) => data,
+            signal : signal
+        })
+    },
     clientGetPosts : (signal : AbortSignal) => {
         return apiClient({
             method : 'GET',

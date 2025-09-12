@@ -18,6 +18,15 @@ const postController = new PostController(postService)
 
 // --- Route ---
 router.get(
+    "/posts/:post_id",
+    authenticateToken,
+    requireUser,
+    validateRequest({
+        params : paramsPostSchema
+    }),
+    postController.getSinglePost.bind(postController)
+)
+router.get(
     "/posts",
     authenticateToken,
     requireUser,

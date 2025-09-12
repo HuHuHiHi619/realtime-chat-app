@@ -10,9 +10,9 @@ export class MessageController {
     try {
       const { page, limit } = req.validatedQuery;
       const conversation_id = req.validatedParams.conversation_id
-
+      const user_id = req.user.id;
       const isParticipant = await this.messageService.checkParticipants(
-        req.user.id,
+        user_id,
         conversation_id
       );
 
@@ -30,23 +30,25 @@ export class MessageController {
 
       return res.status(200).json(data);
     } catch (error) {
-      next();
+      next(error);
     }
   }
 
   // POST /conversation/messages
   public async createMessage(req: Request, res: Response, next: NextFunction) {
     try {
+      const sender_id = req.user.id
       const input = {
         conversation_id : req.validatedParams.conversation_id,
-        ...req.validatedBody
+        ...req.validatedBody,
+        sender_id
       }
       console.log('create message input: ', input)
       const data = await this.messageService.createMessage(input);
 
       return res.status(201).json(data);
     } catch (error) {
-      next()
+      next(error)
     }
   }
 }

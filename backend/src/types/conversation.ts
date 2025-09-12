@@ -3,7 +3,7 @@ import z from "zod";
 
 export type CreateConversationInputDTO = z.infer<
   typeof createConversationSchema
->;
+> & { user_id: number };
 
 export type ParamsConversationInputDTO = z.infer<
   typeof paramsConversationSchema

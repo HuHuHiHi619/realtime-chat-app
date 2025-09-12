@@ -1,8 +1,10 @@
 import { getLikesSchema } from "@shared/schema/post/like.schema";
-import { createPostRepoSchema, createPostSchema, getPostQuerySchema, getPostRepoSchema } from "@shared/schema/post/post.schema";
+import { createPostRepoSchema, createPostSchema, getPostQuerySchema, getPostRepoSchema, paramsPostSchema } from "@shared/schema/post/post.schema";
 import z from "zod";
 
-export type GetPostServiceDTO =
+export type GetSinglePostServiceDTO = z.infer<typeof paramsPostSchema> & { author_id : number }
+
+export type GetPostsServiceDTO =
 z.infer<typeof getPostQuerySchema> & {
     author_id: number
 }

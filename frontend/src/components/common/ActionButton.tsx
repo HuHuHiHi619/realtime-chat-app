@@ -20,7 +20,7 @@ function ActionButton({
   return (
     <button
       onClick={action}
-      className={`flex items-center justify-center gap-2 p-2 rounded-lg cursor-pointer transition-colors duration-200 ${className}`}
+      className={`flex items-center justify-center gap-2 p-2 rounded-2xl cursor-pointer transition-all duration-200 ${className}`}
     >
       <Icon className={iconClassName} />
       <span className={textClassName}>{text}</span>

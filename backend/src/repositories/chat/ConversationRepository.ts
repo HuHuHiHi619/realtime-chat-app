@@ -19,12 +19,14 @@ export class ConversationRepository  {
 
   async findConversations(user_id: number) {
     return await prisma.conversation.findMany({
-      where: { user_id },
+      where: { participants : {
+        some : { user_id }
+      }  },
       select: {
         id: true,
         name: true,
         type: true,
-        edited_at: true,
+        updated_at: true,
         participants: {
           select: {
             user: {
@@ -37,14 +39,15 @@ export class ConversationRepository  {
         },
         messages: {
           select: { id: true, content: true, sent_at: true, sender_id: true },
-          orderBy: {
-            sent_at: "desc",
-          },
+          orderBy: { sent_at: "desc"},
           take: 1,
         },
       },
-      orderBy: { edited_at: "desc" },
-    });
+      orderBy: { updated_at: "desc" },
+    }).then(conversations => conversations.map((c) => ({
+      ...c,
+      participants: c.participants.map((p) => p.user),
+    })));
   }
 
   async findActiveConversation(data : GetActiveConversationServiceDTO) {
@@ -107,7 +110,6 @@ export class ConversationRepository  {
       data: {
         type: data.type,
         name: data.name,
-        user_id: data.user_id,
         participants: {
           create: participantsData,
         },
@@ -126,7 +128,6 @@ export class ConversationRepository  {
     return {
       type: conversation.type,
       name: conversation.name,
-      user_id: conversation.user_id,
       participants: conversation.participants.map((p) => p.user),
     }
   }
@@ -135,7 +136,7 @@ export class ConversationRepository  {
     return await prisma.conversation.update({
       where : { id : conversation_id },
       data : {
-        edited_at : new Date()
+        updated_at : new Date()
       }
     })
   }

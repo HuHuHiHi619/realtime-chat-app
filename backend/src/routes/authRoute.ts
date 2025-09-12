@@ -34,4 +34,11 @@ const authController = new AuthController(authService)
         authController.logout.bind(authController)
     )
 
+
+    // RefreshToken
+    router.get(
+        "/refreshToken",
+        authController.refreshCookies.bind(authController)
+    )
+
 export default router

@@ -4,19 +4,24 @@ import "./App.css";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth"
 import { useEffect } from "react";
-import { useSocketStore } from "./store";
+import { useAuthStore, useSocketStore } from "./store";
 
 function App() {
 
    const  { connect , disconnect} = useSocketStore((state) => state)
+   const { isAuthenticated } = useAuthStore((state) => state)
 
    useEffect(() => {
-      connect()
+      if(isAuthenticated){
+         connect()
+      } else {
+         disconnect()
+      }
 
       return () => {
          disconnect()
       }
-   },[])
+   },[isAuthenticated, connect, disconnect])
 
   return (
     <div>

@@ -8,7 +8,7 @@ interface ChatMessageListProps {
 function ChatMessageList({ bottomRef , chatContainerRef }: ChatMessageListProps) {
   const { user } = useAuthStore();
   const { messages } = useChatStore();
-  
+ 
   return (
     <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto mb-4">
         <div className="flex flex-col h-full">
@@ -28,12 +28,12 @@ function ChatMessageList({ bottomRef , chatContainerRef }: ChatMessageListProps)
                       isOwn ? "flex-row-reverse" : "flex-row"
                     }`}
                   >
-                    <div className="h-10 w-10 rounded-full bg-indigo-500 text-white flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-full bg-amber-600 text-white flex items-center justify-center">
                       {isOwn ? "You" : "Her"}
                     </div>
                     <div
                       className={`text-sm py-2 px-4 rounded-xl shadow ${
-                        isOwn ? "mr-3 bg-indigo-100" : "ml-3 bg-white"
+                        isOwn ? "mr-3 bg-brandChoco-50 text-white" : "ml-3 bg-white"
                       }`}
                     >
                       {msg.content}

@@ -31,7 +31,7 @@ export default function Snowfall({
       glyph.textContent = symbols[Math.floor(Math.random() * symbols.length)];
 
       // สุ่มค่าต่าง ๆ
-      const dur = 8 + Math.random() * 8;        // เวลา
+      const dur = 8 + Math.random() * 24;        // เวลา
       const sway = 10 + Math.random() * 40;     // ระยะเคลื่อนซ้านขวา
       const swayDur = 2 + Math.random() * 3;    // เวลาเคลื่อนซ้านขวา
       const spinDur = 3 + Math.random() * 6;    // เวลาหมุน

@@ -33,7 +33,6 @@ async function main() {
     data: {
       type: "PRIVATE",
       name: null, // private ไม่ต้องมีชื่อ
-      user_id : user1.id,
       participants: {
         create: [{ user_id: user1.id }, { user_id: user2.id }],
       },
@@ -65,7 +64,6 @@ async function main() {
     data: {
       type: "GROUP",
       name: "TEAM DEV",
-      user_id : user1.id,
       participants: {
         create: [{ user_id: user1.id }, { user_id: user2.id }],
       },

@@ -9,8 +9,11 @@ import type {
   Conversations,
   CreateMessageReq,
   Messages,
+  UiMessages,
 } from "@/types/chatStoreType";
-import { prepareTempMessage } from "../helper/temp";
+import { normalizeMessage, prepareTempMessage } from "../helper/temp";
+import { useAuthStore } from "./useAuthStore";
+
 
 export const useChatStore = create<ChatState>((set, get) => ({
   // CONVERSATION STATE
@@ -33,7 +36,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       await withAbortController(async (signal) => {
         const response = await conversationApi.clientGetConversations(signal);
-        console.log("response fetch conversation", response);
         if (!response)
           throw new Error("No response conversations from zustand");
         set({ conversations: response });
@@ -76,9 +78,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         set((state) => {
           const existingId = new Set(state.messages.map((msg) => msg.id));
 
-          const newMessages = response.messages.filter(
+          const newMessages = response.messages
+          .filter(
             (m: Messages) => !existingId.has(m.id)
-          );
+          )
+          .map(normalizeMessage)
 
           return {
             messages: [...newMessages, ...state.messages],
@@ -92,76 +96,42 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   // CRUD MESSAGE METHODS
-  createMessage: async (messageData: CreateMessageReq) => {
-    const { activeConversation } = get();
-    if (!activeConversation || !messageData.content.trim()) return;
+  createMessage: async (messageData : CreateMessageReq) => {
+    const activeConversation = get().activeConversation;
+    if(!activeConversation) return
 
-    const tempMessage = prepareTempMessage(
-      messageData,
-      activeConversation?.conversation_id
-    );
+    const user = useAuthStore.getState().user;
+    if(!user) return
 
-    // optimistic update
-    set({ messages: [...get().messages, tempMessage] });
-
-    try {
-      await withAbortController(async (signal) => {
-        const response = await messageApi.clientCreateMessage(
-          messageData,
-          signal
-        );
-        if (!response) throw new Error("No response message from zustand");
-
-        useSocketStore.getState().emit("send-message", response);
-
-        // set real
-        set({
-          messages: get().messages.map((msg) =>
-            msg.id === tempMessage.id
-              ? {
-                  ...response,
-                  id: tempMessage.id,
-                  sent_at: new Date().toISOString(),
-                }
-              : msg
-          ),
-        });
-        // update active conversation last message
-        const updateLastMessage = (conversation: any, message: any) => ({
-          ...conversation,
-          last_message: {
-            id: message.id,
-            content: message.content,
-            sent_at: message.sent_at,
-            sender_id: message.sender_id,
-          },
-        });
-
-        set((state) => {
-          if (!state.activeConversation) return state;
-
-          return {
-            ...state,
-            activeConversation: updateLastMessage(
-              state.activeConversation,
-              response
-            ),
-          };
-        });
-      });
-    } catch (error) {
-      console.error("Error creating message from zustand", error);
-    }
+    // EMIT TO SOCKET
+    const { emit } = useSocketStore.getState();
+    emit('send-message' , {
+      conversation_id : activeConversation.conversation_id ,
+      content : messageData.content.trim(),
+      message_type : messageData.message_type
+    })
+    set({ inputMessage : "" })
   },
 
   // INPUT METHODS
   setInputMessage: (text: string) => set({ inputMessage: text }),
   setIsTyping: (isTyping: boolean) => set({ isTyping }),
-  setMessages: (msg: Messages[]) => set({ messages: msg }),
-
+  
+  
   // UPDATE UI
   setActiveConversation: (conversation: ActiveConversation) =>
     set({ activeConversation: conversation }),
   setConversations: (conversations: Conversations[]) =>
     set({ conversations: conversations }),
+  setMessages: (msg: UiMessages[]) => set({ messages: msg }),
+  appendMessage: (msg: UiMessages) => set((state) => ({ messages: [...state.messages, msg] })),
+  updateConversationLastMessage : (data : UiMessages) => 
+    set((state) => ({
+      conversations : state.conversations.map((c) => 
+        c.conversation_id === data.conversation_id 
+          ? {...c , last_message : {...data , sent_at : new Date(data.sent_at)}} 
+          : c
+        ),
+    })),
+  
 }));

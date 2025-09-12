@@ -59,4 +59,33 @@ export class AuthService {
 
         return {user , accessToken , refreshToken }
     }
+
+    async refreshAccessToken(refreshToken: string) {
+    try {
+      // Verify refresh token
+      const decoded = jwt.verify(refreshToken, refreshTokenSecret) as {
+        user_id: string;
+      };
+
+      // สร้าง access token ใหม่
+      const payload = { user_id: decoded.user_id };
+      const newAccessToken = jwt.sign(payload, accessTokenSecret, {
+        expiresIn: "15m"
+      });
+
+      return {
+        accessToken: newAccessToken,
+        user_id: decoded.user_id
+      };
+
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        throw ApiError.unauthorized("Refresh token expired");
+      }
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw ApiError.unauthorized("Invalid refresh token");
+      }
+      throw error;
+    }
+  }
 }

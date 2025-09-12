@@ -1,4 +1,4 @@
-import { CreatePostServiceDTO, GetPostServiceDTO } from "../../types/post"
+import { CreatePostServiceDTO, GetPostsServiceDTO, GetSinglePostServiceDTO } from "../../types/post"
 import { PostRepository } from "../../repositories/post/postRepository"
 
 export class PostService {
@@ -6,7 +6,11 @@ export class PostService {
         private postRepository : PostRepository
     ) {}
 
-    async getPosts(data : GetPostServiceDTO ) {
+    async getSinglePost(data : GetSinglePostServiceDTO ){
+        return this.postRepository.findSinglePost(data)
+    }
+
+    async getPosts(data : GetPostsServiceDTO ) {
         const { author_id , page , limit } = data
         const totalPost = await this.postRepository.countPost(author_id)
         const skip = (page - 1) * limit;
@@ -30,7 +34,7 @@ export class PostService {
     }
 
     async deletePost(postData: any){
-        const existingPost = await this.postRepository.findPost(postData)
+        const existingPost = await this.postRepository.findDeletePost(postData)
         if(!existingPost) throw new Error('Post not found')
         
         return this.postRepository.deletePost(existingPost.id)

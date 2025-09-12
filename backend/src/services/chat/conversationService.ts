@@ -13,27 +13,17 @@ export class ConversationService {
       user_id
     );
 
-    const result = conversations.map((c) => {
-      const otherParticipants = c.participants.filter(
-        (p) => p.user.id !== user_id
-      );
+      return conversations.map(c => {
+        const others = c.participants.filter(u => u.id !== user_id)
 
-      const friendData =
-        c.type === "PRIVATE"
-          ? otherParticipants[0].user || null
-          : otherParticipants.map((p) => p.user);
-
-      return {
-        conversation_id: c.id,
-        friend: friendData,
-        last_message: c.messages[0] ? {
-          ... c.messages[0],
-          sent_at : new Date(c.messages[0].sent_at)
-        } : null,
-      };
-    });
-
-    return result ;
+        return {
+          conversation_id : c.id,
+          friend : c.type === 'PRIVATE' ? others[0] ?? null : others,
+          last_message : c.messages[0] 
+          ? { ...c.messages[0] , sent_at : new Date(c.messages[0].sent_at) }
+          : null
+        }
+      })
   }
 
   async getActiveConversation(data : GetActiveConversationServiceDTO ) {

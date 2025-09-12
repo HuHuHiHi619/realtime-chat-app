@@ -10,8 +10,7 @@ function CommentsSection() {
             <span>COMMENTS</span>
         </div>
         <span>44 minutes</span>
-        <ActionButton icon='👍' text='like' />
-        <ActionButton icon='💬' text='reply' />
+        
     </div>
   )
 }

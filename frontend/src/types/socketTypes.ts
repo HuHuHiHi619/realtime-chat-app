@@ -4,5 +4,5 @@ export type SocketState = z.infer<typeof socketSchema> & {
     connect : () => void
     disconnect : () => void
     emit: (e : string , data : any) => void
-    initListeners : () => void
+    forceReconnect: () => void;
 }

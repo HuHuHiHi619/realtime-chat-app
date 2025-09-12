@@ -13,15 +13,19 @@ export const previewMessageSchema = z.object({
   sender_id: z.number(),
 });
 
-// 🔹 Input (used from client)
-export const createConversationSchema = z.object({
-  type: z.enum(["PRIVATE", "GROUP"]),
-  name: z.string().optional().nullable(),
-  user_id: z.number(),
-  participants: z
-    .array(z.number().int().positive())
-    .min(1, "participants must be at least 1"),
-});
+// 🔹 Input 
+export const createConversationSchema = z.discriminatedUnion('type',[
+  z.object({
+    type: z.literal("PRIVATE"),
+    participants : z.array(z.number().int().positive()).length(1, "PRIVATE must have exactly 1 participant"),
+    name : z.never().optional()
+  }),
+  z.object({
+    type : z.literal("GROUP"),
+    participants : z.array(z.number().int().positive()).min(2, "GROUP must have at least 2 participants"),
+    name : z.string().min(1 , 'Group name must be at least 1 character')
+  })
+])
 
 // 🔹 Query / Params 
 export const paramsConversationSchema = z.object({

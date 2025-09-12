@@ -12,7 +12,6 @@ export class ApiClientError extends Error {
 
 function validateResponse<T>(schema: (data: any) => T, data: any): T {
   try {
-  
     return schema(data);
   } catch (error) {
     console.error("❌ Zod validation error:", error);

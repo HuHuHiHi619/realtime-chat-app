@@ -8,8 +8,9 @@ export class CommentController {
     public async getComments(req : Request , res : Response , next : NextFunction) {
         try{
             const { page , limit } = req.validatedQuery
+            const user_id = req.user.id;
             const input = {
-                author_id : req.user.id,
+                author_id : user_id,
                 post_id : req.validatedParams.post_id,
                 page ,
                 limit
@@ -20,9 +21,10 @@ export class CommentController {
     }
     public async createComment(req: Request , res: Response , next: NextFunction) {
         try{
+            const user_id = req.user.id;
             const input = {
                 ...req.validatedBody,
-                author_id : req.user.id,
+                author_id : user_id,
                 post_id : req.validatedParams.post_id
             }
             const comment = await this.commentService.createComment(input)

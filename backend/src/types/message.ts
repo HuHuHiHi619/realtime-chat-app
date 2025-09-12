@@ -5,7 +5,7 @@ export type GetMessageServiceDTO = z.infer<typeof paramsMessageSchema> &
   z.infer<typeof getMessageQuerySchema>;
 
 export type CreateMessageServiceDTO = z.infer<typeof paramsMessageSchema> &
-  z.infer<typeof createMessageSchema>;
+  z.infer<typeof createMessageSchema> & { sender_id : number }
 
 export type GetMessageRepoDTO = z.infer<typeof paramsMessageSchema> &
   z.infer<typeof getMessageRepoSchema>;

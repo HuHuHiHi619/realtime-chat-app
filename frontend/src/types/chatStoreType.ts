@@ -3,7 +3,7 @@ import type {
   conversationSchema,
 } from "@shared/schema/chat/conversation.schema";
 import type {
-  createMessageRepoSchema,
+  createMessageSchema,
   messageSchema,
   paginatedMessageSchema,
   paginationSchema,
@@ -17,11 +17,15 @@ export type PaginatedMessages = z.infer<typeof paginatedMessageSchema>
 export type Conversations = z.infer<typeof conversationSchema>;
 export type ActiveConversation = z.infer<typeof activeConversationSchema>;
 export type CreateMessageReq = z.infer<typeof paramsMessageSchema> &
-  z.infer<typeof createMessageRepoSchema>;
+  z.infer<typeof createMessageSchema>;
+
+export type UiMessages = Messages & {
+  isMe: boolean;
+};
 
 interface ChatStateBase {
   conversations: Conversations[];
-  messages: Messages[];
+  messages: UiMessages[];
   activeConversation: ActiveConversation | null;
   pagination: Pagination;
 
@@ -38,7 +42,9 @@ interface ChatMessageAction {
   // UI FUNCTION
   setInputMessage: (text: string) => void;
   setIsTyping: (isTyping: boolean) => void;
-  setMessages: (msg: Messages[]) => void;
+  appendMessage: (msg: UiMessages) => void;
+  setMessages: (msg: UiMessages[]) => void;
+  updateConversationLastMessage : (msg : UiMessages) => void
 }
 
 interface ChatConversationAction {

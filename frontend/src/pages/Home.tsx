@@ -1,4 +1,5 @@
 // pages/Home.tsx
+import Snowfall from "@/components/common/SnowFall";
 import Chat from "../components/chat/Chat";
 import Conversation from "../components/chat/Conversation";
 import Post from "../components/post/Post";
@@ -23,6 +24,8 @@ export default function Home() {
             { currentView === 'Chat' ? <Chat /> : null}
           </main>
           </div>
+
+           <Snowfall intervalMs={260} zIndex={-1}/>
       </div>
     </>
   );

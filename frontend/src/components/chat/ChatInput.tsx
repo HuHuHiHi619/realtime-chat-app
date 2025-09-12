@@ -10,7 +10,6 @@ function ChatInput() {
   const handleEnterCreateMessage = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    console.log("input say: ", inputMessage);
     if (!inputMessage.trim()) return;
 
     if (!activeConversation?.conversation_id) {
@@ -26,7 +25,6 @@ function ChatInput() {
       if (e.key === "Enter") {
         createMessage({
           conversation_id: activeConversation.conversation_id,
-          sender_id: user.id,
           content: inputMessage.trim(),
           message_type: "TEXT",
         });
@@ -52,7 +50,6 @@ function ChatInput() {
 
     createMessage({
       conversation_id: activeConversation?.conversation_id,
-      sender_id: user.id ,
       content: inputMessage,
       message_type: "TEXT",
     });

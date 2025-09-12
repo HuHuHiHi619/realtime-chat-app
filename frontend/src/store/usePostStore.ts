@@ -16,6 +16,26 @@ export const usePostStore = create<PostState>((set, get) => ({
   },
   inputPost: "",
 
+  fetchPostById : async (post_id : number) => {
+    try{
+        await withAbortController(async (signal) => {
+          const response = await postApi.clientGetSinglePost(post_id, signal);
+          if (!response) throw new Error("No response posts from zustand");
+
+          set((state) => ({
+            postsById:{
+              ...state.postsById , [ response.id ] : response,
+            },
+            postIds : state.postIds.includes(response.id)
+              ? state.postIds 
+              : [...state.postIds, response.id]
+          }))
+        })
+    }catch(error){
+        console.error("Error fetching post from zustand", error);
+    }
+  },
+
   fetchPosts: async () => {
     try {
       await withAbortController(async (signal) => {
@@ -121,4 +141,5 @@ export const usePostStore = create<PostState>((set, get) => ({
       }));
     }
   },
+
 }));

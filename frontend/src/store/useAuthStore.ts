@@ -34,7 +34,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       login: async (credentials : LoginInput) => {
-        console.log("login action called", credentials);
         set({ isLoading: true });
         try {
           await withAbortController( async (signal) => {

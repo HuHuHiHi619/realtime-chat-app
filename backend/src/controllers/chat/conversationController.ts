@@ -19,7 +19,7 @@ export class ConversationController {
 
       return res.status(200).json(conversations);
     } catch (error) {
-      next();
+      next(error);
     }
   }
 
@@ -30,9 +30,10 @@ export class ConversationController {
     next: NextFunction
   ) {
     try {
+      const user_id = req.user.id;
       const input = {
         conversation_id : req.validatedParams.conversation_id,
-        user_id : req.user.id
+        user_id : user_id
       }
 
       const activeConversation =
@@ -40,7 +41,7 @@ export class ConversationController {
 
       return res.status(200).json(activeConversation);
     } catch (error) {
-      next();
+      next(error);
     }
   }
 
@@ -52,7 +53,6 @@ export class ConversationController {
   ) {
     try {
       const user_id = req.user.id;
-
       const input = {
         ...req.validatedBody,
         user_id: user_id,
@@ -61,10 +61,12 @@ export class ConversationController {
       const conversation = await this.conversationService.createConversation(
         input
       );
-
+      if(conversation){
+        console.log('create conversation: ', conversation);
+      }
       return res.status(201).json(conversation);
     } catch (error) {
-      next();
+      next(error);
     }
   }
 }

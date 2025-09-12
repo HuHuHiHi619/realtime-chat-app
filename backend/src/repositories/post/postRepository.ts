@@ -1,4 +1,8 @@
-import { CreatePostRepoDTO, GetPostRepoDTO } from "../../types/post";
+import {
+  CreatePostRepoDTO,
+  GetPostRepoDTO,
+  GetSinglePostServiceDTO,
+} from "../../types/post";
 import prisma from "../../prisma/prismaClient";
 
 export class PostRepository {
@@ -8,6 +12,55 @@ export class PostRepository {
     });
   }
 
+  async findSinglePost(data: GetSinglePostServiceDTO) {
+    const { author_id, post_id } = data;
+    const post = await prisma.post.findUnique({
+      where: { id: post_id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            display_name: true,
+            avatar_url: true,
+          },
+        },
+        medias: true,
+        likes: {
+          include: {
+            author: { select: { id: true, username: true } },
+          },
+        },
+        comments: {
+          include: {
+            author: { select: { id: true, username: true, avatar_url: true } },
+            likes: {
+              include: { author: { select: { id: true, username: true } } },
+            },
+            replies: {
+              include: {
+                author: {
+                  select: { id: true, username: true, avatar_url: true },
+                },
+                likes: {
+                  include: { author: { select: { id: true, username: true } } },
+                },
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+
+    return post;
+  }
+
   async findPosts(data: GetPostRepoDTO) {
     const { author_id, take, skip } = data;
     return await prisma.post.findMany({
@@ -15,7 +68,14 @@ export class PostRepository {
       select: {
         id: true,
         content: true,
-        author_id: true,
+        author : {
+          select : {
+            id : true,
+            username : true,
+            display_name : true,
+            avatar_url : true
+          }
+        },
         created_at: true,
         updated_at: true,
         _count: {
@@ -31,14 +91,9 @@ export class PostRepository {
     });
   }
 
-  async findPost(postData : any){
-    const {  post_id , author_id } = postData
-    return await prisma.post.findUnique({
-      where : {
-        id : post_id,
-        author_id : author_id
-      }
-    })
+  async findDeletePost(data : any) {
+    const { post_id , author_id } = data
+    return await prisma.post.findUnique({ where: { id: post_id , author_id } });
   }
 
   async createPost({ author_id, content }: CreatePostRepoDTO) {
@@ -56,11 +111,10 @@ export class PostRepository {
       },
     });
   }
-  
-  async deletePost(post_id: number ) {
+
+  async deletePost(post_id: number) {
     return await prisma.post.delete({
       where: { id: post_id },
     });
   }
-  
 }

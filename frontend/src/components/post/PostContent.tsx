@@ -1,6 +1,6 @@
 function PostContent({ content }: any) {
   return (
-    <div className="px-4 text-brandChoco-50">
+    <div className="pl-5 text-brandChoco-50 text-xl">
       <p>{content}</p>
     </div>
   );

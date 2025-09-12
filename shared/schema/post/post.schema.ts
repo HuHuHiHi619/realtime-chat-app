@@ -49,7 +49,12 @@ export const postSchema = z.object({
   content: z.string().min(1).max(5000),
   created_at: z.string().transform((str) => new Date(str)),
   updated_at: z.string().transform((str) => new Date(str)).nullable(),
-  author_id: z.number().int().positive(),
+  author: z.object({
+     id: z.number().int().positive(),
+                username : z.string(),
+                display_name: z.string().nullable(),
+                avatar_url: z.string().nullable()
+  }),
   _count : z.object({
     likes : z.number(),
     comments : z.number()

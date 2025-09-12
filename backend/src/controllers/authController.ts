@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthService } from "../services/authService";
+import { jwt } from "zod";
 
 
 export class AuthController {
@@ -8,9 +9,9 @@ export class AuthController {
   public async register(req: Request, res: Response , next : NextFunction) {
     try {
       const user = await this.authService.registerUser(req.validatedBody);
-      return res.status(200).json({
+      return res.status(200).json(
         user,
-      });
+      );
     } catch (error) {
       next(error)
     }
@@ -43,15 +44,17 @@ export class AuthController {
 
   public async logout(req: Request, res: Response , next : NextFunction) {
     try {
-      res.cookie("accessToken", {
+      res.clearCookie("accessToken", {
         httpOnly: true,
         sameSite: "lax",
         secure: false,
+        maxAge: 15 * 60 * 1000,
       }),
-        res.cookie("refreshToken", {
-          httpOnly: true,
-          sameSite: "lax",
-          secure: false,
+        res.clearCookie("refreshToken", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         });
       return res.status(200).json({ message: "Logout successfully" });
     } catch (error) {
@@ -62,9 +65,20 @@ export class AuthController {
 
   public async refreshCookies(req : Request , res : Response , next : NextFunction) {
     try{
-      const token = req.cookies.refreshToken
-      if(!token) return res.status(401).json({error : 'No refresh token'})
+      const refreshToken = req.cookies.refreshToken
+      if(!refreshToken) return res.status(401).json({error : 'No refresh token'})
       
+      const refreshResult = await this.authService.refreshAccessToken(refreshToken)
+      const { accessToken , user_id } = refreshResult
+      
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        maxAge: 15 * 60 * 1000,
+      });
+      return res.status(200).json(user_id)
+
     }catch(error){
       console.error("refresh cookies error :",error)
       next(error)

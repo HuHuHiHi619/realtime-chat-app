@@ -12,7 +12,7 @@ function LogoutButton() {
   };
 
   return (
-    <div onClick={handleLogout} className="  text-red-500  rounded-md cursor-pointer hover:scale-105 transition-all ease-in 1s">
+    <div onClick={handleLogout} className="flex justify-end text-red-500  rounded-md cursor-pointer hover:scale-105 transition-all ease-in 1s">
       <Settings />
     </div>
   );

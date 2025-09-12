@@ -1,11 +1,11 @@
 import { usePostStore, useUiStore } from "@/store";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Ellipsis, Bookmark, Trash2} from "lucide-react";
-import { set } from "zod";
 
-function PostHeader({ user, createdAt , postId }: any) {
+function PostHeader({ username, createdAt , postId }: any) {
   const [isPostMenuOpen , setIsMenuOpen] = useState<boolean>(false)
   const { deletePost } = usePostStore();
+  const { toggleConfirmOpen } = useUiStore();
   const postMenuRef = useRef<HTMLDivElement>(null);
 
   const handleDelete = async (post_id : number) => {
@@ -57,7 +57,7 @@ function PostHeader({ user, createdAt , postId }: any) {
           <img className="w-10 h-10 rounded-full bg-amber-600 border-none" />
           <div className="flex flex-col">
             <p className="font-semibold text-brandChoco-50">
-              SAMPLE USER{user}
+              {username}
             </p>
             <p className="text-brandChoco-50 text-sm opacity-70">{createdAt}</p>
           </div>
@@ -75,7 +75,17 @@ function PostHeader({ user, createdAt , postId }: any) {
               <Bookmark />
               <p>save post</p>
             </div>
-            <div onClick={() => handleDelete(postId)} className="hover:bg-brandCream-50 hover:text-brandChoco-50 p-2 rounded-md flex gap-1 transition-all ease-in-out duration-300">
+            <div onClick={() => {
+                toggleConfirmOpen({
+                title: "Delete Post?",
+                description: "This action cannot be undone.",
+                confirmText: "Delete",
+                cancelText: "Cancel",
+                onConfirm: () => handleDelete(postId),
+             })
+              } 
+            } 
+            className="hover:bg-brandCream-50 hover:text-brandChoco-50 p-2 rounded-md flex gap-1 transition-all ease-in-out duration-300">
               <Trash2 />
               <p>delete post</p>
             </div>

@@ -15,6 +15,12 @@ export const paramsMessageSchema = z.object({
     .regex(/^\d+$/, "conversation_id must be a number")
     .transform((val) => parseInt(val))
 });
+export const paramsSocketMessageSchema = z.object({
+  conversation_id: z
+    .number()
+    .int()
+    .positive()
+});
 
 // ===== QUERY SCHEMAS =====
 export const getMessageQuerySchema = z.object({
@@ -39,9 +45,10 @@ export const createMessageSchema = z.object({
         .min(1, "เนื้อหา Comment ไม่สามารถว่างเปล่าได้")
         .max(2000, "เนื้อหา Comment ต้องไม่เกิน 2000 ตัวอักษร")
         .trim(),
-    sender_id: z.number().int().positive(),
     message_type: MESSAGE_TYPE.default("TEXT"),
 })
+
+
 
 // ===== REPOSITORY LAYER SCHEMAS =====
 export const getMessageRepoSchema = z.object({
@@ -72,9 +79,11 @@ export const validateCreatePostRequest = {
 export const messageSchema = z.object({
     id: z.number(),
     content: z.string(),
-    sender_id: z.number(),  // อาจจะเป็น string
+    sender_id: z.number(),  
     message_type: MESSAGE_TYPE,
     sent_at: z.string(),
+    conversation_id: z.number().optional(),
+    is_edited: z.boolean().optional(),
 })
 
 export const paginationSchema = z.object({
