@@ -68,13 +68,13 @@ export class PostRepository {
       select: {
         id: true,
         content: true,
-        author : {
-          select : {
-            id : true,
-            username : true,
-            display_name : true,
-            avatar_url : true
-          }
+        author: {
+          select: {
+            id: true,
+            username: true,
+            display_name: true,
+            avatar_url: true,
+          },
         },
         created_at: true,
         updated_at: true,
@@ -84,16 +84,30 @@ export class PostRepository {
             comments: true,
           },
         },
+        likes: {
+          select: {
+            id: true,
+            author_id: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+                display_name: true,
+                avatar_url: true,
+              }
+            }
+          },
+        },
       },
-      orderBy: { created_at: "asc" },
+      orderBy: { created_at: "desc" },
       take,
       skip,
     });
-  }
+}
 
-  async findDeletePost(data : any) {
-    const { post_id , author_id } = data
-    return await prisma.post.findUnique({ where: { id: post_id , author_id } });
+  async findDeletePost(data: any) {
+    const { post_id, author_id } = data;
+    return await prisma.post.findUnique({ where: { id: post_id, author_id } });
   }
 
   async createPost({ author_id, content }: CreatePostRepoDTO) {

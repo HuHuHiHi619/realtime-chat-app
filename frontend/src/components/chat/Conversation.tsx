@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useAuthStore, useChatStore } from "../../store";
 import LogoutButton from "../common/LogoutButton";
 import { useUiStore } from "../../store/useUiStore";
+import { UserRound } from "lucide-react";
 
 function Conversation() {
   const getDisplayName = (friend: unknown) => {
@@ -25,7 +26,7 @@ function Conversation() {
   const { fetchConversations, fetchActiveConversation } = useChatStore(
     (state) => state
   );
-  const { setCurrentView } = useUiStore();
+  const { setCurrentView , setSideView } = useUiStore();
 
   // STATE
   const { conversations } = useChatStore((state) => state);
@@ -33,25 +34,24 @@ function Conversation() {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-
     fetchConversations();
   }, [isAuthenticated]);
 
- 
-
   return (
-    <div className=" p-6 h-screen ">
-      <div className=" h-full overflow-hidden outline-4 outline-offset-2 outline-white rounded-4xl">
+    <div className="p-6 h-screen">
+      <div className="h-full overflow-hidden rounded-3xl shadow-lg bg-brandCream-50 border border-brandChoco-50/20">
         {/* Sidebar - Conversation List */}
-        <div className="h-full p-4 rounded-2xl bg-brandCream-50 flex-shrink-0 ">
+        <div className="h-full p-4 flex-shrink-0 flex flex-col">
           {/* Sidebar Header */}
-          <div className="grid grid-cols-2 items-center gap-24 px-4 pb-4  border-b border-b-gray-200">
-            <div className="text-2xl font-bold text-brandChoco-50">Messages</div>
-            <LogoutButton />
+          <div className="flex items-center justify-between px-4 pb-4 border-b border-brandChoco-50/20">
+            <h2 className="text-3xl font-bold text-brandChoco-50">Messages</h2>
+            <div className="p-2 rounded-full shadow-inner text-brandChoco-50 hover:bg-brandChoco-50 hover:text-white cursor-pointer transition-all duration-200">
+              <UserRound onClick={() => setSideView("Profile")} />
+            </div>
           </div>
 
           {/* Conversation List */}
-          <ul className="flex flex-col space-y-1 mt-4 -mx-2 h-full overflow-y-auto">
+          <ul className="flex flex-col space-y-2 mt-4 -mx-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-brandChoco-100/30 scrollbar-track-transparent pr-2">
             {conversations.length > 0 ? (
               conversations.map((conversation) => {
                 const { initial, name } = getDisplayName(conversation.friend);
@@ -63,26 +63,26 @@ function Conversation() {
                       setCurrentView("Chat");
                     }}
                     key={conversation.conversation_id}
-                    className={`flex flex-row items-center rounded-xl cursor-pointer p-4 mx-2 hover:bg-brandCream-100 active:bg-sky-400`}
+                    className="flex flex-row shadow-inner items-center rounded-2xl cursor-pointer p-4 mx-2 transition-all duration-200 
+                                hover:bg-brandCream-100/50 "
                   >
-                    <div className="flex items-center justify-center h-10 w-10 rounded-full text-white bg-indigo-500 flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full text-white bg-brandChoco-100 flex-shrink-0 shadow-inner">
                       {initial}
                     </div>
                     <div className="flex flex-col flex-grow ml-3">
-                        <div className="text-sm font-medium text-gray-900">
-                          <p>{name}</p>
-                          {conversation.last_message && (
-                            <p>{conversation.last_message.content}</p>
-                          )}
-                        </div>
+                      <p className="text-lg font-semibold text-brandChoco-50">{name}</p>
+                      {conversation.last_message && (
+                        <p className=" text-brandChoco-50 truncate">
+                          {conversation.last_message.content}
+                        </p>
+                      )}
                     </div>
                   </li>
                 );
               })
             ) : (
-              // It's good practice to show a message when the list is empty
-              <div className="text-center text-gray-500 p-4">
-                No conversations yet.
+              <div className="text-center text-brandChoco-100 p-4 italic">
+                No conversations yet 🍫
               </div>
             )}
           </ul>

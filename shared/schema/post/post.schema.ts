@@ -44,26 +44,36 @@ export const createPostRepoSchema = z.object({
 });
 
 // ===== ENTITY SCHEMA =====
+// เพิ่ม likes array ใน schema
 export const postSchema = z.object({
   id: z.number().int().positive(),
   content: z.string().min(1).max(5000),
   created_at: z.string().transform((str) => new Date(str)),
   updated_at: z.string().transform((str) => new Date(str)).nullable(),
   author: z.object({
-     id: z.number().int().positive(),
-                username : z.string(),
-                display_name: z.string().nullable(),
-                avatar_url: z.string().nullable()
+    id: z.number().int().positive(),
+    username: z.string(),
+    display_name: z.string().nullable(),
+    avatar_url: z.string().nullable()
   }),
-  _count : z.object({
-    likes : z.number(),
-    comments : z.number()
+  likes: z.array(z.object({  // ✅ เพิ่มนี้
+    id: z.number(),
+    author_id: z.number(),
+    author: z.object({
+      id: z.number(),
+      username: z.string(),
+      display_name: z.string().nullable(),
+      avatar_url: z.string().nullable()
+    })
+  })),
+  isLiked: z.boolean().optional(),
+  likesCount: z.number(),
+  commentCount: z.number(),
+  _count: z.object({  // ✅ เพิ่มนี้เพื่อให้ Backend ส่งมา
+    likes: z.number(),
+    comments: z.number()
   })
-}).transform((data) => ({
-  ...data,
-  likes: data._count.likes,
-  comments: data._count.comments,
-}));
+});
 
 
 // ===== VALIDATION SCHEMAS =====

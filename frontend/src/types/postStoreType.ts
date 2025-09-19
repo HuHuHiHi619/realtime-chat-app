@@ -1,7 +1,7 @@
 import type z from "zod"
 import type { Pagination } from "./chatStoreType"
 import type { createPostRepoSchema,  postSchema } from "@shared/schema/post/post.schema"
-import type { P } from "node_modules/tailwindcss/dist/resolve-config-QUZ9b-Gn.d.mts";
+
 
 export type Posts = z.infer<typeof postSchema> 
 export type ClientPosts = z.infer<typeof postSchema> & { isLiked? : boolean }
@@ -13,7 +13,7 @@ interface PostStateBase {
     postsById : Record<number,ClientPosts>,
     pagination : Pagination
     inputPost : string
-  
+    togglingLike : Record<number,boolean>
 }
 interface PostAction {
     // Post action

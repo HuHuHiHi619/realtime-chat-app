@@ -2,7 +2,7 @@ import { usePostStore, useUiStore } from "@/store";
 import ActionButton from "../common/ActionButton";
 import { Heart, MessageCircle, Share } from "lucide-react";
 
-function PostActions({ postId, likes, comments, isLiked }: any) {
+function PostActions({ postId, likesCount, comments, isLiked }: any) {
   const { toggleLike } = usePostStore();
   const { openPost } = useUiStore();
 
@@ -10,7 +10,7 @@ function PostActions({ postId, likes, comments, isLiked }: any) {
     <div className="mx-4 ">
       {/* Stats */}
       <div className=" pb-2 flex justify-between ">
-        {likes > 0 && (
+        {likesCount > 0 && (
           <div
             className={`flex items-center gap-2 py-2 ${
               isLiked ? "text-brandStrawberry-100" : ""
@@ -19,7 +19,7 @@ function PostActions({ postId, likes, comments, isLiked }: any) {
             <span className={`flex items-center justify-center w-8 h-8 mb-0.5 text-brandChoco-50 ${isLiked ? "bg-brandStrawberry-50 text-white" : ""} rounded-full`}>
               <Heart size={21}  strokeWidth={2} />
             </span>
-            <span className="text-xl text-brandChoco-50">{likes}</span>
+            <span className="text-xl text-brandChoco-50">{likesCount}</span>
           </div>
         )}
         {comments > 0 && <span>{comments} comments</span>}
@@ -33,7 +33,7 @@ function PostActions({ postId, likes, comments, isLiked }: any) {
           }}
           icon={Heart}
           text="Like"
-          className={`shadow-inner text-lg ${isLiked ? "bg-brandStrawberry-50" : ""} text-brandChoco-50 hover:bg-brandCream-50 hover:scale-105 transition-all duration-300`}
+          className={`shadow-inner text-lg ${isLiked ? "bg-brandStrawberry-50 hover:scale-105 " : "hover:bg-brandCream-50"} text-brandChoco-50  hover:scale-105 transition-all duration-300`}
           iconClassName={`${isLiked ? "text-white" : ""}`}
           textClassName={`${
             isLiked ? "text-white font-bold" : ""

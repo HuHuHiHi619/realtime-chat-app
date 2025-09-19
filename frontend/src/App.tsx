@@ -6,6 +6,7 @@ import Auth from "./pages/Auth"
 import { useEffect } from "react";
 import { useAuthStore, useSocketStore } from "./store";
 
+
 function App() {
 
    const  { connect , disconnect} = useSocketStore((state) => state)
@@ -27,6 +28,7 @@ function App() {
     <div>
       <BrowserRouter>
          <Routes>
+           
             <Route path="/" element={<Auth/> } />
             <Route path="/chat" element={<Home /> } />
          </Routes>

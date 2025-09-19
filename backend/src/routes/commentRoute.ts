@@ -16,20 +16,38 @@ const commentService = new CommentService(commentRepository)
 const commentController = new CommentController(commentService)
 
 // --- Route ---
-router.get(
-    "/comments/:post_id",
-    authenticateToken,
-    requireUser,
-    validateRequest(validateGetCommentsRequest),
-    commentController.getComments.bind(commentController)
-)
-
-router.post(
-    "/comments/:post_id",
-    authenticateToken,
-    requireUser,
-    validateRequest(validateCreateCommentRequest),
-    commentController.createComment.bind(commentController)
-)
+    // --- Comment ---
+    router.get(
+        "/posts/:post_id/comments",
+        authenticateToken,
+        requireUser,
+        validateRequest(validateGetCommentsRequest),
+        commentController.getComments.bind(commentController)
+    )
+    router.post(
+        "/posts/:post_id/comments",
+        authenticateToken,
+        requireUser,
+        validateRequest(validateCreateCommentRequest),
+        commentController.createComment.bind(commentController)
+    )
+    
+    // --- Replies ---
+    router.get(
+        "/posts/:post_id/comments/:comment_id/replies",
+        authenticateToken,
+        requireUser,
+        validateRequest(validateGetCommentsRequest),
+        commentController.getComments.bind(commentController)
+    )
+    
+    router.post(
+        "/posts/:post_id/comments/:comment_id/replies",
+        authenticateToken,
+        requireUser,
+        validateRequest(validateCreateCommentRequest),
+        commentController.createComment.bind(commentController)
+    )
+   
 
 export default router

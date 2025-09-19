@@ -16,8 +16,15 @@ export class PostService {
         const skip = (page - 1) * limit;
         const hasMore = page * limit < totalPost
      
-        const posts = await this.postRepository.findPosts({author_id , skip , take :limit})
+        const result = await this.postRepository.findPosts({author_id , skip , take :limit})
+        const posts = result.map(post => ({
+            ...post,
+            isLiked : post.likes.some(like => like.author_id === author_id),
+            likesCount : post._count.likes,
+            commentCount : post._count.comments
+        }))
 
+        
         return {
             pagination : {
                 page , 

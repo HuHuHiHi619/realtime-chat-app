@@ -5,13 +5,25 @@ export class LikeRepository {
   async countLike(data: LikeDTO) {
     const { author_id, post_id, comment_id } = data;
 
-    return await prisma.like.count({
+    const likes = await prisma.like.findMany({
       where: {
         author_id: author_id,
         post_id: post_id,
         comment_id: comment_id,
       },
+      select: {
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
     });
+
+    return {
+      count: likes.length,
+      likes,
+    };
   }
 
   async toggleLike(data: LikeDTO) {
@@ -36,10 +48,12 @@ export class LikeRepository {
 
     if (existingLike) {
       await prisma.like.delete({ where: { id: existingLike.id } });
-      return { isLiked: false, likesCount: await this.countLike(data) };
+      const likeData = await this.countLike(data);
+      return { isLiked: false, likesCount: likeData.count , likes : likeData.likes};
     } else {
       await prisma.like.create({ data: createData });
-      return { isLiked: true, likesCount: await this.countLike(data) };
+      const likeData = await this.countLike(data);
+      return { isLiked: true, likesCount: likeData.count , likes : likeData.likes };
     }
   }
 }

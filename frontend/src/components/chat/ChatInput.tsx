@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuthStore, useChatStore } from "../../store";
+import { Paperclip } from "lucide-react";
 
 function ChatInput() {
   const [error, setError] = useState<string | null>(null);
@@ -56,35 +57,35 @@ function ChatInput() {
   };
 
   return (
-    <div className="flex items-center h-16 bg-white rounded-xl px-4">
-      <button className="h-10 w-10 text-black hover:bg-indigo-500 rounded-full">
-        <svg
-          className="h-6 w-6 text-indigo-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15.172 7l-6.586 6.586"
-          />
-        </svg>
+    <div
+      className="flex items-center gap-3 h-16 bg-white/70 rounded-2xl px-5 
+              shadow-sm border border-brandChoco-50/20 hover:shadow-md 
+              transition-all duration-200"
+    >
+      <button
+        className="bg-brandChoco-50 p-2.5 text-white hover:bg-brandChoco-100 
+                   transition-colors duration-200 rounded-xl flex-shrink-0
+                   hover:shadow-sm"
+      >
+        <Paperclip className="w-4 h-4" />
       </button>
-      <div className="flex-grow ml-4">
-        <input
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          onKeyDown={handleEnterCreateMessage}
-          className="w-full border rounded-xl pl-4 h-10 focus:outline-none focus:border-indigo-300"
-          placeholder="Type your message..."
-        />
-      </div>
+
+      <input
+        type="text"
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+        onKeyDown={handleEnterCreateMessage}
+        className="flex-1 bg-transparent border-none focus:outline-none 
+             text-brandChoco-50 placeholder-brandChoco-100/60 text-xl"
+        placeholder="Message..."
+      />
+
       <button
         onClick={handleClickCreateMessage}
-        className="ml-4 px-4 py-1 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white"
+        className="bg-brandChoco-50 hover:bg-brandChoco-100 px-4 py-2 
+             rounded-xl text-white text-lg font-medium transition-colors 
+             duration-200 flex-shrink-0 disabled:opacity-50"
+        disabled={!inputMessage.trim()}
       >
         Send
       </button>

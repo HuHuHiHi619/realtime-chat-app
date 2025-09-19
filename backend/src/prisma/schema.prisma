@@ -133,6 +133,7 @@ model Post {
   created_at DateTime  @default(now())
   updated_at DateTime?
   author_id  Int
+  isLiked    Boolean   @default(false)
 
   // --- RELATION ---
   author        User           @relation("Posted", fields: [author_id], references: [id], onDelete: Cascade)
@@ -167,6 +168,7 @@ model Comment {
   author_id  Int
   post_id    Int
   parent_id  Int?
+  isLiked    Boolean   @default(false)
   
   // --- RELATION ---
   author        User           @relation("Commented", fields: [author_id], references: [id], onDelete: Cascade)

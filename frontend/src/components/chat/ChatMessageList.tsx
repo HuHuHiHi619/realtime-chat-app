@@ -32,8 +32,8 @@ function ChatMessageList({ bottomRef , chatContainerRef }: ChatMessageListProps)
                       {isOwn ? "You" : "Her"}
                     </div>
                     <div
-                      className={`text-sm py-2 px-4 rounded-xl shadow ${
-                        isOwn ? "mr-3 bg-brandChoco-50 text-white" : "ml-3 bg-white"
+                      className={`text-brandChoco-50  py-2 px-4 rounded-xl shadow ${
+                        isOwn ? "mr-3 bg-brandChoco-50 text-white" : "ml-3 bg-brandCream-50"
                       }`}
                     >
                       {msg.content}

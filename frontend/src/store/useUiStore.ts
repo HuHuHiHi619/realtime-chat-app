@@ -6,6 +6,7 @@ type UiState = UiStateBase & UiStateMethods;
 
 export const useUiStore = create<UiState>((set, get) => ({
   currentView: "Post",
+  sideView: "Conversation",
   activePostId: null,
   isPostOpen: false,
   isPostInputOpen: false,
@@ -18,8 +19,12 @@ export const useUiStore = create<UiState>((set, get) => ({
     set({ currentView: view });
   },
 
+  setSideView: (view: UiState["sideView"]) => {
+    set({ sideView : view})
+  },
+
   openPost : (postId : number) => {
-      console.log('postAction id', postId);
+      
      set({ isPostOpen: true, activePostId: postId });
      const { postsById , fetchPostById } = usePostStore.getState();
      if(!postsById[postId] || !postsById[postId].content) {

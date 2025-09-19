@@ -7,6 +7,7 @@ import { usePostStore } from "@/store/usePostStore";
 import { useEffect } from "react";
 import { Panda } from "lucide-react";
 import ConfirmDialog from "../common/ConfirmDialog";
+import PostModal from "./PostModal";
 
 
 
@@ -22,16 +23,17 @@ function Post() {
   return (
     <>
       <FeedLayout>
-        <div className="mx-10">
+        <div className="mx-24">
           <PostInput />
         </div>
         {postIds.length > 0 ? (
-          <div className="mx-10 my-5 grid gap-6">
+          <div className="mx-24 my-5 grid gap-6">
             { postIds.map((id) => {
               const post = postsById[id]
      
               return <PostLists key={id} post={post} />
             }) }
+            <PostModal />
             <ConfirmDialog />
           </div>
         ) : 

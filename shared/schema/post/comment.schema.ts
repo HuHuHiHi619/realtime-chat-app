@@ -2,7 +2,8 @@ import z from "zod";
 
 // ===== PARAMS SCHEMAS =====
 export const paramsCommentSchema = z.object({
-  post_id: z.string().transform((val) => parseInt(val)), // ✅ เพิ่ม transform
+  post_id: z.string().transform((val) => parseInt(val)), 
+  comment_id: z.string().optional().nullable().transform((val) => parseInt(val)), 
 });
 
 // ===== QUERY SCHEMAS =====
@@ -32,15 +33,19 @@ export const commentSchema = z
       .string()
       .transform((str) => new Date(str))
       .nullable(),
+    isLiked : z.boolean().default(false),
     author_id: z.number().int().positive(),
     post_id: z.number().int().positive(),
+    comment_id: z.number().int().positive().nullable(),
     _count: z.object({
-      likes: z.number(), // Like ของ Comment
+      likes: z.number(),
+      replies: z.number(), // Like ของ Comment
     }),
   })
   .transform((data) => ({
     ...data,
     likes: data._count.likes,
+    replies: data._count.replies,
   }));
 
 export const createCommentSchema = z.object({
@@ -55,6 +60,7 @@ export const createCommentSchema = z.object({
 export const getCommentRepoSchema = z.object({
   author_id: z.number(),
   post_id: z.number(),
+  parent_id : z.number().optional().nullable(),
   skip: z.number().min(0),
   take: z.number().min(1).max(50), // ✅ เปลี่ยนจาก limit เป็น take + เพิ่ม validation
 });
@@ -62,6 +68,7 @@ export const getCommentRepoSchema = z.object({
 export const createCommentRepoSchema = z.object({
   author_id: z.number(),
   post_id: z.number(),
+  parent_id : z.number().optional().nullable(),
   content: z.string().min(1).max(2000),
 });
 
@@ -72,11 +79,8 @@ export const validateGetCommentsRequest = {
 };
 
 export const validateCreateCommentRequest = {
-  params: paramsCommentSchema, // ถ้าใช้ POST /posts/:post_id/comments
+  params: paramsCommentSchema, 
   body: createCommentSchema,
 };
 
-// หรือถ้าใช้ POST /comments (post_id ใน body)
-export const validateCreateCommentDirectRequest = {
-  body: createCommentSchema,
-};
+

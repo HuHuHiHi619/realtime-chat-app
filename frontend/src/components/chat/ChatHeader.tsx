@@ -1,5 +1,6 @@
 import { useAuthStore, useChatStore } from "../../store";
 import { useUiStore } from "../../store/useUiStore";
+import { ArrowLeftFromLine } from "lucide-react";
 
 function ChatHeader() {
   const { user } = useAuthStore();
@@ -12,17 +13,17 @@ function ChatHeader() {
   return (
     <div className="flex items-center justify-between h-16 w-full px-3 mb-4">
       <div>
-        <div className="text-2xl mt-1 flex items-center">
+        <div className="text-2xl mt-1 flex items-center gap-4">
           <button
             onClick={() => setCurrentView("Post")}
-            className="bg-blue-500 p-2 rounded-2xl text-white cursor-pointer hover:bg-blue-600 "
+            className="p-2 rounded-full shadow-inner text-brandCream-50 bg-brandChoco-50 cursor-pointer hover:scale-110 transition-all duration-200"
           >
-            back
+            <ArrowLeftFromLine />
           </button>
-          <span className="text-gray-700 mx-3">
-            Chat with {friend?.username}
-          </span>
-          <span className="flex w-3 h-3 rounded-full bg-green-500"></span>
+          <div className="flex items-center bg-brandCream-50 p-2 rounded-full">
+            <span className="text-brandChoco-50 mx-3">{friend?.username}</span>
+            <span className=" w-3 h-3 rounded-full bg-green-500"></span>
+          </div>
         </div>
       </div>
       <button className="inline-flex items-center justify-center rounded-full h-10 w-10 text-gray-500 hover:bg-gray-300">

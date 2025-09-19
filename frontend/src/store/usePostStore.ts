@@ -4,6 +4,8 @@ import { withAbortController } from "@/helper/withAbortController";
 import { create } from "zustand";
 import type { CreatePostReq, Posts, PostState } from "@/types/postStoreType";
 import { useUiStore } from "./useUiStore";
+import { useAuthStore } from "./useAuthStore";
+import { li } from "motion/react-client";
 
 export const usePostStore = create<PostState>((set, get) => ({
   postIds: [],
@@ -15,24 +17,33 @@ export const usePostStore = create<PostState>((set, get) => ({
     hasMore: false,
   },
   inputPost: "",
+  togglingLike: {},
 
-  fetchPostById : async (post_id : number) => {
-    try{
-        await withAbortController(async (signal) => {
-          const response = await postApi.clientGetSinglePost(post_id, signal);
-          if (!response) throw new Error("No response posts from zustand");
+  fetchPostById: async (post_id: number) => {
+    try {
+      await withAbortController(async (signal) => {
+        const response = await postApi.clientGetSinglePost(post_id, signal);
+        if (!response) throw new Error("No response posts from zustand");
 
-          set((state) => ({
-            postsById:{
-              ...state.postsById , [ response.id ] : response,
+        set((state) => {
+          const prev = state.postsById[response.id] ?? {};
+          return {
+            postsById: {
+              ...state.postsById,
+              [response.id]: {
+                ...state.postsById[response.id],
+                ...response,
+                ...prev,
+              },
             },
-            postIds : state.postIds.includes(response.id)
-              ? state.postIds 
-              : [...state.postIds, response.id]
-          }))
-        })
-    }catch(error){
-        console.error("Error fetching post from zustand", error);
+            postIds: state.postIds.includes(response.id)
+              ? state.postIds
+              : [...state.postIds, response.id],
+          };
+        });
+      });
+    } catch (error) {
+      console.error("Error fetching post from zustand", error);
     }
   },
 
@@ -43,22 +54,22 @@ export const usePostStore = create<PostState>((set, get) => ({
         if (!response) throw new Error("No response posts from zustand");
 
         set((state) => {
-          const postsById = response.posts.reduce(
-            (acc: Record<number, Posts>, post: Posts) => {
-              acc[post.id] = {
-                ...state.postsById[post.id],
-                ...post,
-              };
-              return acc;
-            },
-            {}
-          );
+          const postsById = { ...state.postsById };
 
-          const postIds = response.posts.map((post: Posts) => post.id);
+          response.posts.forEach((post: Posts) => {
+            const user = useAuthStore.getState().user;
+
+            if (!user) return;
+
+            postsById[post.id] = {
+              ...postsById[post.id],
+              ...post,
+            };
+          });
 
           return {
             postsById,
-            postIds,
+            postIds: response.posts.map((p) => p.id),
             pagination: response.pagination,
           };
         });
@@ -112,24 +123,64 @@ export const usePostStore = create<PostState>((set, get) => ({
     const state = get();
     const post = state.postsById[post_id];
     if (!post) return;
-   
-    const isCurrentlyLiked = post.isLiked ?? false;
+    if (state.togglingLike[post_id]) return;
+
     const prevPost = { ...post };
 
-    set((state) => ({
-      postsById: {
-        ...state.postsById,
-        [post_id]: {
-          ...post,
-          isLiked: !isCurrentlyLiked,
-          likes: post.likes + (isCurrentlyLiked ? -1 : 1),
+    console.log("🟡 ก่อน toggle:", {
+      post_id,
+      isLiked: prevPost.isLiked,
+      likesCount: prevPost.likesCount,
+    });
+
+    set((state) => {
+      const current = state.postsById[post_id];
+      const updated = {
+        ...current,
+        isLiked: !current.isLiked,
+        likesCount: current.isLiked
+          ? current.likesCount - 1
+          : current.likesCount + 1,
+      };
+
+      console.log("🟠 หลัง toggle (optimistic):", {
+        post_id,
+        isLiked: updated.isLiked,
+        likesCount: updated.likesCount,
+      });
+
+      return {
+        postsById: {
+          ...state.postsById,
+          [post_id]: updated,
         },
-      },
-    }));
+        togglingLike: { ...state.togglingLike, [post_id]: true },
+      };
+    });
+
     try {
       await withAbortController(async (signal) => {
         const response = await likeApi.clientToggleLike(post_id, signal);
         if (!response) throw new Error("No response posts from zustand");
+
+        set((state) => ({
+          ...state,
+          postsById: {
+            ...state.postsById,
+            [post_id]: {
+              ...state.postsById[post_id],
+              isLiked: response.isLiked,
+              likesCount: response.likesCount,
+            },
+          },
+          togglingLike: { ...state.togglingLike, [post_id]: false }, // ✅ reset flag
+        }));
+
+        console.log("🟢 หลัง response จาก BE:", {
+          post_id,
+          isLiked: response.isLiked,
+          likesCount: response.likesCount,
+        });
       });
     } catch (error) {
       console.error("Error toggling like:", error);
@@ -138,8 +189,8 @@ export const usePostStore = create<PostState>((set, get) => ({
           ...state.postsById,
           [post_id]: prevPost,
         },
+        togglingLike: { ...state.togglingLike, [post_id]: false }, // ✅ reset flag
       }));
     }
   },
-
 }));
